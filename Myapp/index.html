@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My File Storage</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #16213e;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 {
+            color: #4fc3f7;
+            font-size: 28px;
+        }
+        p {
+            color: #b0bec5;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .btn {
+            background: #4fc3f7;
+            color: #1a1a2e;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 File Storage</h1>
+        <p>Welcome to your personal file storage app on Telegram!</p>
+        <p>You can store and manage your files easily.</p>
+        <button class="btn" onclick="showMessage()">Get Started</button>
+    </div>
+
+    <script>
+        // Telegram Web App API ကို ချိတ်ဆက်ခြင်း
+        const tg = window.Telegram.WebApp;
+        tg.ready(); // App အသင့်ဖြစ်ကြောင်း Telegram ကိုအကြောင်းကြားခြင်း
+        tg.expand(); // App ကို Full Screen ဖြစ်အောင်လုပ်ခြင်း
+
+        function showMessage() {
+            tg.showAlert("Welcome to File Storage App! 🎉");
+        }
+    </script>
+</body>
+</html>
