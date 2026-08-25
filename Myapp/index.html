@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My File Storage</title>
+    <title>Enn Storage</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
@@ -42,28 +42,20 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        .btn:active {
-            transform: scale(0.95);
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📁 File Storage</h1>
+        <h1>📁 Enn Storage</h1>
         <p>Welcome to your personal file storage app on Telegram!</p>
-        <p>You can store and manage your files easily.</p>
-        <button class="btn" onclick="showMessage()">Get Started</button>
+        <p>Store and manage your files easily.</p>
+        <button class="btn" onclick="tg.showAlert('Welcome! 🎉')">Get Started</button>
     </div>
 
     <script>
-        // Telegram Web App API ကို ချိတ်ဆက်ခြင်း
         const tg = window.Telegram.WebApp;
-        tg.ready(); // App အသင့်ဖြစ်ကြောင်း Telegram ကိုအကြောင်းကြားခြင်း
-        tg.expand(); // App ကို Full Screen ဖြစ်အောင်လုပ်ခြင်း
-
-        function showMessage() {
-            tg.showAlert("Welcome to File Storage App! 🎉");
-        }
+        tg.ready();
+        tg.expand();
     </script>
 </body>
 </html>
