@@ -1,61 +1,353 @@
 <!DOCTYPE html>
-<html>
+<html lang="my">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enn Storage</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1a1a2e;
-            color: white;
-            text-align: center;
-            padding: 50px 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: #16213e;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        h1 {
-            color: #4fc3f7;
-            font-size: 28px;
-        }
-        p {
-            color: #b0bec5;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-        .btn {
-            background: #4fc3f7;
-            color: #1a1a2e;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+                 viewport-fit=cover">
+
+  <title>RO_Bookshelf</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    :root {
+      --navy: #0b2345;
+      --gold: #c89b3c;
+      --cream: #f8f3e8;
+      --text: #1f2937;
+      --muted: #7a7468;
+      --card: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 18px 16px 90px;
+      padding-top: max(18px, env(safe-area-inset-top));
+      padding-bottom: max(90px, env(safe-area-inset-bottom));
+      font-family: Arial, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 520px;
+      margin: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: white;
+    }
+
+    .brand-name {
+      color: var(--navy);
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    h1 {
+      margin: 12px 0 6px;
+      color: var(--navy);
+      font-size: 27px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      color: var(--navy);
+      font-size: 19px;
+      margin: 24px 0 12px;
+    }
+
+    .intro {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      width: 100%;
+      height: 48px;
+      border: 0;
+      border-radius: 13px;
+      padding: 0 16px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      box-shadow: 0 3px 12px rgba(11, 35, 69, .08);
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 3px;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      border: 1px solid var(--gold);
+      border-radius: 22px;
+      background: white;
+      color: var(--navy);
+      padding: 10px 15px;
+      font-size: 13px;
+    }
+
+    .category.active {
+      background: var(--gold);
+      color: white;
+    }
+
+    .books {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 13px;
+    }
+
+    .book {
+      overflow: hidden;
+      border-radius: 15px;
+      background: var(--card);
+      box-shadow: 0 4px 14px rgba(11, 35, 69, .10);
+    }
+
+    .cover {
+      width: 100%;
+      height: 175px;
+      object-fit: cover;
+      background: #ded8ca;
+    }
+
+    .book-content {
+      padding: 11px;
+    }
+
+    .book-title {
+      min-height: 36px;
+      color: var(--navy);
+      font-size: 15px;
+      font-weight: bold;
+      line-height: 1.25;
+    }
+
+    .author {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .meta {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .download {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 5px;
+      background: var(--navy);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      z-index: 10;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      justify-content: space-around;
+      padding: 13px 8px;
+      padding-bottom: max(13px, env(safe-area-inset-bottom));
+      background: white;
+      box-shadow: 0 -3px 14px rgba(0,0,0,.10);
+    }
+
+    .nav-item {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .nav-item.active {
+      color: var(--navy);
+      font-weight: bold;
+    }
+
+    @media (max-width: 340px) {
+      .books {
+        grid-template-columns: 1fr;
+      }
+
+      .cover {
+        height: 230px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1>📁 Enn Storage</h1>
-        <p>Welcome to your personal file storage app on Telegram!</p>
-        <p>Store and manage your files easily.</p>
-        <button class="btn" onclick="tg.showAlert('Welcome! 🎉')">Get Started</button>
+  <main class="app">
+    <div class="brand">
+      <img class="logo" src="1000060366.jpg" alt="RO Bookshelf logo">
+
+      <div>
+        <div class="brand-name">RO_Bookshelf</div>
+        <div class="tagline">Explore the World Through Books</div>
+      </div>
     </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-    </script>
+    <h1>စာအုပ်များ ရှာဖွေပါ</h1>
+    <div class="intro">
+      သင်ကြိုက်တဲ့ စာအုပ်တွေကို ရှာပြီး Download လုပ်ပါ။
+    </div>
+
+    <input
+      id="search"
+      class="search"
+      type="search"
+      placeholder="စာအုပ်၊ Author ရှာရန်..."
+    >
+
+    <h2>အမျိုးအစားများ</h2>
+
+    <div class="categories">
+      <button class="category active" data-category="all">အားလုံး</button>
+      <button class="category" data-category="novel">Novels</button>
+      <button class="category" data-category="education">Education</button>
+      <button class="category" data-category="business">Business</button>
+    </div>
+
+    <h2>နောက်ဆုံးတင်ထားသောစာအုပ်များ</h2>
+
+    <section id="books" class="books">
+      <article class="book" data-category="business">
+        <img class="cover" src="book-cover.jpg" alt="Book cover">
+
+        <div class="book-content">
+          <div class="book-title">Sample Business Book</div>
+          <div class="author">Author Name</div>
+          <div class="meta">PDF • 4.2 MB</div>
+
+          <button class="download"
+                  onclick="requestDownload('sample-business-book')">
+            Download
+          </button>
+        </div>
+      </article>
+
+      <article class="book" data-category="novel">
+        <img class="cover" src="book-cover.jpg" alt="Book cover">
+
+        <div class="book-content">
+          <div class="book-title">Sample Novel</div>
+          <div class="author">Author Name</div>
+          <div class="meta">PDF • 6.8 MB</div>
+
+          <button class="download"
+                  onclick="requestDownload('sample-novel')">
+            Download
+          </button>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active">⌂<br>Home</button>
+    <button class="nav-item">▦<br>Categories</button>
+    <button class="nav-item">♡<br>Saved</button>
+  </nav>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+
+    tg.ready();
+    tg.expand();
+
+    try {
+      tg.setHeaderColor("#0b2345");
+      tg.setBackgroundColor("#f8f3e8");
+    } catch (error) {
+      console.log("Telegram theme API is unavailable in browser preview");
+    }
+
+    function requestDownload(bookId) {
+      tg.showConfirm(
+        "ဖိုင်ရယူရန် ကြော်ငြာကို အဆုံးထိကြည့်ရပါမယ်။ ဆက်လုပ်မလား?",
+        function (confirmed) {
+          if (confirmed) {
+            tg.showAlert(
+              "ဒီနေရာမှာ Ad ပြီးရင် Backend ဆီက Watermarked PDF link ရပါမယ်။"
+            );
+
+            console.log("Requested book:", bookId);
+            console.log("Telegram initData:", tg.initData);
+          }
+        }
+      );
+    }
+
+    const searchInput = document.getElementById("search");
+    const books = document.querySelectorAll(".book");
+
+    searchInput.addEventListener("input", function () {
+      const keyword = this.value.toLowerCase();
+
+      books.forEach(function (book) {
+        book.style.display =
+          book.innerText.toLowerCase().includes(keyword)
+            ? ""
+            : "none";
+      });
+    });
+
+    document.querySelectorAll(".category").forEach(function (button) {
+      button.addEventListener("click", function () {
+        document
+          .querySelectorAll(".category")
+          .forEach(btn => btn.classList.remove("active"));
+
+        this.classList.add("active");
+
+        const category = this.dataset.category;
+
+        books.forEach(function (book) {
+          book.style.display =
+            category === "all" ||
+            book.dataset.category === category
+              ? ""
+              : "none";
+        });
+      });
+    });
+  </script>
 </body>
 </html>
