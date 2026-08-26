@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0,
-                 viewport-fit=cover">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RO_Bookshelf</title>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root {
-      --navy: #0b2345;
-      --gold: #c89b3c;
-      --cream: #f8f3e8;
-      --text: #1f2937;
-      --muted: #7a7468;
+      --bg: #f4efe6;
       --card: #ffffff;
+      --text: #222222;
+      --muted: #6b6b6b;
+      --primary: #7a4f2a;
+      --primary-dark: #5f3d20;
+      --line: #e7dfd3;
+      --nav: #fffaf2;
     }
 
     * {
@@ -26,328 +25,282 @@
 
     body {
       margin: 0;
-      padding: 18px 16px 90px;
-      padding-top: max(18px, env(safe-area-inset-top));
-      padding-bottom: max(90px, env(safe-area-inset-bottom));
       font-family: Arial, sans-serif;
-      background: var(--cream);
+      background: var(--bg);
       color: var(--text);
     }
 
     .app {
-      max-width: 520px;
-      margin: auto;
+      max-width: 430px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: var(--bg);
+      padding-bottom: 78px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
+    .header {
+      padding: 18px 18px 10px;
+      text-align: center;
     }
 
     .logo {
-      width: 58px;
-      height: 58px;
-      object-fit: contain;
-      border-radius: 12px;
-      background: white;
-    }
-
-    .brand-name {
-      color: var(--navy);
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .tagline {
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 4px;
+      width: 92px;
+      height: 92px;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+      margin: 0 auto 12px;
+      background: #ddd;
     }
 
     h1 {
-      margin: 12px 0 6px;
-      color: var(--navy);
-      font-size: 27px;
+      margin: 0;
+      font-size: 28px;
       line-height: 1.2;
     }
 
-    h2 {
-      color: var(--navy);
-      font-size: 19px;
-      margin: 24px 0 12px;
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 700;
     }
 
-    .intro {
+    .desc {
+      margin: 8px 0 0;
       color: var(--muted);
       font-size: 14px;
-      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .search-wrap {
+      padding: 14px 18px 6px;
     }
 
     .search {
       width: 100%;
-      height: 48px;
-      border: 0;
-      border-radius: 13px;
-      padding: 0 16px;
-      font-size: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 15px;
       outline: none;
-      background: white;
-      box-shadow: 0 3px 12px rgba(11, 35, 69, .08);
+      background: #fff;
     }
 
-    .categories {
+    .section {
+      padding: 10px 18px 0;
+    }
+
+    .section-title {
+      margin: 10px 0 12px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .chips {
       display: flex;
       gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 3px;
+      flex-wrap: wrap;
     }
 
-    .category {
-      flex: 0 0 auto;
-      border: 1px solid var(--gold);
-      border-radius: 22px;
-      background: white;
-      color: var(--navy);
-      padding: 10px 15px;
-      font-size: 13px;
+    .chip {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 14px;
+      color: var(--text);
     }
 
-    .category.active {
-      background: var(--gold);
-      color: white;
+    .chip.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
     }
 
-    .books {
+    .book-list {
+      padding: 0 18px 12px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 13px;
+      gap: 14px;
     }
 
-    .book {
-      overflow: hidden;
-      border-radius: 15px;
+    .book-card {
       background: var(--card);
-      box-shadow: 0 4px 14px rgba(11, 35, 69, .10);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
     }
 
-    .cover {
+    .cover-box {
+      width: 74px;
+      height: 98px;
+      border-radius: 12px;
+      background: #efe6d7;
+      overflow: hidden;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8b6a4b;
+      font-size: 13px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .cover-box img {
       width: 100%;
-      height: 175px;
+      height: 100%;
       object-fit: cover;
-      background: #ded8ca;
+      display: block;
     }
 
-    .book-content {
-      padding: 11px;
+    .book-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .book-title {
-      min-height: 36px;
-      color: var(--navy);
-      font-size: 15px;
-      font-weight: bold;
-      line-height: 1.25;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 4px;
     }
 
     .author {
-      margin-top: 5px;
+      margin: 0 0 6px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
     }
 
     .meta {
-      margin-top: 7px;
+      margin: 0 0 10px;
       color: var(--muted);
-      font-size: 11px;
+      font-size: 12px;
     }
 
-    .download {
-      width: 100%;
-      margin-top: 10px;
-      border: 0;
-      border-radius: 9px;
-      padding: 10px 5px;
-      background: var(--navy);
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
+    .download-btn {
+      border: none;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .download-btn:active {
+      background: var(--primary-dark);
     }
 
     .bottom-nav {
       position: fixed;
-      z-index: 10;
-      right: 0;
+      left: 50%;
       bottom: 0;
-      left: 0;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: var(--nav);
+      border-top: 1px solid var(--line);
       display: flex;
       justify-content: space-around;
-      padding: 13px 8px;
-      padding-bottom: max(13px, env(safe-area-inset-bottom));
-      background: white;
-      box-shadow: 0 -3px 14px rgba(0,0,0,.10);
+      padding: 10px 8px 14px;
     }
 
     .nav-item {
-      border: 0;
-      background: transparent;
+      font-size: 13px;
       color: var(--muted);
-      font-size: 12px;
+      text-align: center;
     }
 
     .nav-item.active {
-      color: var(--navy);
-      font-weight: bold;
-    }
-
-    @media (max-width: 340px) {
-      .books {
-        grid-template-columns: 1fr;
-      }
-
-      .cover {
-        height: 230px;
-      }
+      color: var(--primary);
+      font-weight: 700;
     }
   </style>
 </head>
-
 <body>
-  <main class="app">
-    <div class="brand">
-      <img class="logo" src="1000060366.jpg" alt="RO Bookshelf logo">
+  <div class="app">
+    <div class="header">
+      <img
+        class="logo"
+        src="IMG_20260824_194925_668_644055750933112628.webp"
+        alt="RO Bookshelf logo">
 
-      <div>
-        <div class="brand-name">RO_Bookshelf</div>
-        <div class="tagline">Explore the World Through Books</div>
+      <h1>RO_Bookshelf</h1>
+      <p class="subtitle">Explore the World Through Books</p>
+      <p class="desc">စာအုပ်များ ရှာဖွေပါ</p>
+      <p class="desc">သင်ကြိုက်တဲ့ စာအုပ်တွေကို ရှာပြီး Download လုပ်ပါ။</p>
+    </div>
+
+    <div class="search-wrap">
+      <input class="search" type="text" placeholder="စာအုပ်၊ Author ရှာရန်..." />
+    </div>
+
+    <div class="section">
+      <div class="section-title">အမျိုးအစားများ</div>
+      <div class="chips">
+        <div class="chip active">အားလုံး</div>
+        <div class="chip">Novels</div>
+        <div class="chip">Education</div>
+        <div class="chip">Business</div>
       </div>
     </div>
 
-    <h1>စာအုပ်များ ရှာဖွေပါ</h1>
-    <div class="intro">
-      သင်ကြိုက်တဲ့ စာအုပ်တွေကို ရှာပြီး Download လုပ်ပါ။
+    <div class="section">
+      <div class="section-title">နောက်ဆုံးတင်ထားသောစာအုပ်များ</div>
     </div>
 
-    <input
-      id="search"
-      class="search"
-      type="search"
-      placeholder="စာအုပ်၊ Author ရှာရန်..."
-    >
+    <div class="book-list">
+      <div class="book-card">
+        <div class="cover-box">
+          <img src="book-cover.jpg" alt="Book cover">
+        </div>
+        <div class="book-info">
+          <p class="book-title">Sample Business Book</p>
+          <p class="author">Author Name</p>
+          <p class="meta">PDF • 4.2 MB</p>
+          <button class="download-btn" onclick="downloadBook('Sample Business Book')">Download</button>
+        </div>
+      </div>
 
-    <h2>အမျိုးအစားများ</h2>
-
-    <div class="categories">
-      <button class="category active" data-category="all">အားလုံး</button>
-      <button class="category" data-category="novel">Novels</button>
-      <button class="category" data-category="education">Education</button>
-      <button class="category" data-category="business">Business</button>
+      <div class="book-card">
+        <div class="cover-box">
+          <img src="book-cover.jpg" alt="Book cover">
+        </div>
+        <div class="book-info">
+          <p class="book-title">Sample Novel</p>
+          <p class="author">Author Name</p>
+          <p class="meta">PDF • 6.8 MB</p>
+          <button class="download-btn" onclick="downloadBook('Sample Novel')">Download</button>
+        </div>
+      </div>
     </div>
 
-    <h2>နောက်ဆုံးတင်ထားသောစာအုပ်များ</h2>
-
-    <section id="books" class="books">
-      <article class="book" data-category="business">
-        <img class="cover" src="book-cover.jpg" alt="Book cover">
-
-        <div class="book-content">
-          <div class="book-title">Sample Business Book</div>
-          <div class="author">Author Name</div>
-          <div class="meta">PDF • 4.2 MB</div>
-
-          <button class="download"
-                  onclick="requestDownload('sample-business-book')">
-            Download
-          </button>
-        </div>
-      </article>
-
-      <article class="book" data-category="novel">
-        <img class="cover" src="book-cover.jpg" alt="Book cover">
-
-        <div class="book-content">
-          <div class="book-title">Sample Novel</div>
-          <div class="author">Author Name</div>
-          <div class="meta">PDF • 6.8 MB</div>
-
-          <button class="download"
-                  onclick="requestDownload('sample-novel')">
-            Download
-          </button>
-        </div>
-      </article>
-    </section>
-  </main>
-
-  <nav class="bottom-nav">
-    <button class="nav-item active">⌂<br>Home</button>
-    <button class="nav-item">▦<br>Categories</button>
-    <button class="nav-item">♡<br>Saved</button>
-  </nav>
+    <div class="bottom-nav">
+      <div class="nav-item active">⌂<br>Home</div>
+      <div class="nav-item">▦<br>Categories</div>
+      <div class="nav-item">♡<br>Saved</div>
+    </div>
+  </div>
 
   <script>
-    const tg = window.Telegram.WebApp;
-
-    tg.ready();
-    tg.expand();
-
-    try {
-      tg.setHeaderColor("#0b2345");
-      tg.setBackgroundColor("#f8f3e8");
-    } catch (error) {
-      console.log("Telegram theme API is unavailable in browser preview");
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+      tg.ready();
+      tg.expand();
     }
 
-    function requestDownload(bookId) {
-      tg.showConfirm(
-        "ဖိုင်ရယူရန် ကြော်ငြာကို အဆုံးထိကြည့်ရပါမယ်။ ဆက်လုပ်မလား?",
-        function (confirmed) {
-          if (confirmed) {
-            tg.showAlert(
-              "ဒီနေရာမှာ Ad ပြီးရင် Backend ဆီက Watermarked PDF link ရပါမယ်။"
-            );
-
-            console.log("Requested book:", bookId);
-            console.log("Telegram initData:", tg.initData);
-          }
-        }
-      );
+    function downloadBook(title) {
+      if (tg) {
+        tg.showAlert(title + " ကို download လုပ်ရန် link ထည့်ရပါမယ်။");
+      } else {
+        alert(title + " ကို download လုပ်ရန် link ထည့်ရပါမယ်။");
+      }
     }
-
-    const searchInput = document.getElementById("search");
-    const books = document.querySelectorAll(".book");
-
-    searchInput.addEventListener("input", function () {
-      const keyword = this.value.toLowerCase();
-
-      books.forEach(function (book) {
-        book.style.display =
-          book.innerText.toLowerCase().includes(keyword)
-            ? ""
-            : "none";
-      });
-    });
-
-    document.querySelectorAll(".category").forEach(function (button) {
-      button.addEventListener("click", function () {
-        document
-          .querySelectorAll(".category")
-          .forEach(btn => btn.classList.remove("active"));
-
-        this.classList.add("active");
-
-        const category = this.dataset.category;
-
-        books.forEach(function (book) {
-          book.style.display =
-            category === "all" ||
-            book.dataset.category === category
-              ? ""
-              : "none";
-        });
-      });
-    });
   </script>
 </body>
 </html>
