@@ -1,22 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>RO_Bookshelf</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1,
+             maximum-scale=1, user-scalable=no"
+  />
+
+  <meta name="theme-color" content="#0f172a" />
+
+  <title>RO Bookshelf</title>
+
+  <!-- Telegram Mini App Support -->
+  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+
   <style>
     :root {
       --bg: #0f172a;
       --surface: #111827;
       --surface-2: #1f2937;
+      --card-bg: #172033;
+      --input-bg: rgba(17, 24, 39, .82);
       --text: #f8fafc;
       --muted: #94a3b8;
       --accent: #38bdf8;
       --accent-2: #2563eb;
-      --border: rgba(255,255,255,0.08);
-      --card-radius: 20px;
-      --shadow: 0 10px 30px rgba(0,0,0,0.24);
+      --success: #22c55e;
+      --danger: #f87171;
+      --border: rgba(255, 255, 255, .09);
+      --shadow: 0 12px 32px rgba(0, 0, 0, .24);
       --safe-bottom: env(safe-area-inset-bottom, 16px);
     }
 
@@ -25,490 +39,1482 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
-      margin: 0;
-      padding: 0;
+    html,
+    body {
       width: 100%;
       min-height: 100%;
+      margin: 0;
+      padding: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      overflow-x: hidden;
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     body {
-      min-height: 100vh;
+      overflow-x: hidden;
       background:
-        radial-gradient(circle at top, rgba(56,189,248,0.12), transparent 35%),
-        radial-gradient(circle at bottom, rgba(37,99,235,0.10), transparent 35%),
+        radial-gradient(
+          circle at top left,
+          rgba(56, 189, 248, .13),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at bottom right,
+          rgba(37, 99, 235, .13),
+          transparent 35%
+        ),
         var(--bg);
+    }
+
+    body.light {
+      --card-bg: #ffffff;
+      --input-bg: rgba(255, 255, 255, .92);
+      --border: rgba(15, 23, 42, .1);
+      --shadow: 0 10px 28px rgba(15, 23, 42, .1);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     .app {
       width: 100%;
-      max-width: 520px;
+      max-width: 580px;
       margin: 0 auto;
-      padding: 16px 16px calc(24px + var(--safe-bottom));
+      padding: 14px 14px calc(94px + var(--safe-bottom));
     }
 
     .hero {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(37,99,235,0.18), rgba(56,189,248,0.10));
+      padding: 19px;
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 18px;
+      border-radius: 27px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(37, 99, 235, .3),
+          rgba(56, 189, 248, .08)
+        );
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      inset: auto -20px -30px auto;
-      width: 140px;
-      height: 140px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(56,189,248,0.28), transparent 70%);
+      right: -55px;
+      bottom: -80px;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, .2);
+      filter: blur(15px);
       pointer-events: none;
     }
 
     .brand-row {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 14px;
+      gap: 13px;
     }
 
     .logo {
-      width: 58px;
-      height: 58px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #38bdf8, #2563eb);
       display: grid;
-      place-items: center;
-      box-shadow: 0 12px 24px rgba(37,99,235,0.30);
       flex: 0 0 auto;
+      width: 60px;
+      height: 60px;
+      place-items: center;
+      border-radius: 20px;
+      background: linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent-2)
+      );
+      box-shadow: 0 12px 25px rgba(37, 99, 235, .3);
     }
 
     .logo span {
-      font-size: 28px;
+      font-size: 29px;
       line-height: 1;
     }
 
-    .title-wrap h1 {
-      margin: 0;
-      font-size: 22px;
-      line-height: 1.2;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
     }
 
-    .title-wrap p {
-      margin: 6px 0 0;
+    h1 {
+      margin-bottom: 5px;
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -.02em;
+    }
+
+    .subtitle {
+      margin: 0;
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
     }
 
+    .user-greeting {
+      position: relative;
+      z-index: 1;
+      margin: 17px 0 0;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
     .stats {
+      position: relative;
+      z-index: 1;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 16px;
+      gap: 8px;
+      margin-top: 15px;
     }
 
     .stat {
-      background: rgba(17,24,39,0.65);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 12px;
+      padding: 11px 7px;
       text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: rgba(17, 24, 39, .53);
     }
 
     .stat strong {
       display: block;
+      margin-bottom: 3px;
       font-size: 18px;
-      margin-bottom: 4px;
     }
 
     .stat span {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 10px;
     }
 
     .section {
-      margin-top: 18px;
+      margin-top: 20px;
     }
 
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 11px;
     }
 
     .section-header h2 {
       margin: 0;
       font-size: 16px;
-      font-weight: 700;
     }
 
-    .section-header button {
-      background: transparent;
+    .section-header p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .text-button {
+      padding: 0;
       border: 0;
       color: var(--accent);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 0;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .card {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(31,41,55,0.96), rgba(17,24,39,0.96));
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      padding: 14px;
-      box-shadow: var(--shadow);
-      min-height: 210px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .book-cover {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(56,189,248,0.20), rgba(37,99,235,0.12));
-      border: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      margin-bottom: 12px;
-      display: grid;
-      place-items: center;
-      color: rgba(255,255,255,0.82);
-      font-size: 42px;
-    }
-
-    .card h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
-      line-height: 1.35;
-    }
-
-    .card .author {
-      color: var(--muted);
+      background: transparent;
       font-size: 12px;
-      margin-bottom: 10px;
-    }
-
-    .meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .pill {
-      font-size: 11px;
-      color: var(--text);
-      background: rgba(56,189,248,0.12);
-      border: 1px solid rgba(56,189,248,0.18);
-      padding: 6px 10px;
-      border-radius: 999px;
-    }
-
-    .actions {
-      margin-top: auto;
-      display: flex;
-      gap: 10px;
-    }
-
-    .btn {
-      width: 100%;
-      border: 0;
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: white;
-      box-shadow: 0 10px 24px rgba(37,99,235,0.28);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.06);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.08);
+      font-weight: 800;
     }
 
     .search-box {
       display: flex;
-      gap: 10px;
-      background: rgba(17,24,39,0.72);
+      gap: 8px;
+      padding: 9px;
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 10px;
+      background: var(--input-bg);
       box-shadow: var(--shadow);
     }
 
     .search-box input {
+      min-width: 0;
       flex: 1;
-      background: transparent;
+      padding: 0 5px;
       border: 0;
-      outline: none;
+      outline: 0;
       color: var(--text);
-      font-size: 14px;
+      background: transparent;
     }
 
     .search-box input::placeholder {
       color: var(--muted);
     }
 
-    .search-box button {
-      min-width: 92px;
+    .btn {
+      min-height: 42px;
+      padding: 10px 13px;
+      border: 0;
+      border-radius: 13px;
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform .16s ease, opacity .16s ease;
     }
 
-    .empty {
-      margin-top: 18px;
-      padding: 18px;
-      border-radius: 18px;
-      text-align: center;
+    .btn:active {
+      transform: scale(.97);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(
+        135deg,
+        var(--accent),
+        var(--accent-2)
+      );
+      box-shadow: 0 8px 20px rgba(37, 99, 235, .25);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .btn-success {
+      color: #fff;
+      background: linear-gradient(
+        135deg,
+        #22c55e,
+        #15803d
+      );
+    }
+
+    .category-scroll {
+      display: flex;
+      gap: 8px;
+      padding-bottom: 3px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .category-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(255, 255, 255, .06);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .category.active {
+      border-color: var(--accent-2);
+      background: var(--accent-2);
+    }
+
+    .continue-card {
+      display: flex;
+      gap: 13px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 21px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+
+    .mini-cover {
+      display: grid;
+      flex: 0 0 auto;
+      width: 78px;
+      height: 99px;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 14px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(56, 189, 248, .25),
+          rgba(37, 99, 235, .3)
+        );
+      font-size: 33px;
+    }
+
+    .mini-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .continue-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .continue-info h3 {
+      margin: 4px 0 5px;
+      font-size: 14px;
+    }
+
+    .continue-info p {
+      margin-bottom: 10px;
       color: var(--muted);
-      background: rgba(255,255,255,0.04);
-      border: 1px dashed rgba(255,255,255,0.10);
+      font-size: 11px;
     }
 
-    .footer-space {
-      height: 18px;
+    .progress {
+      height: 6px;
+      margin-bottom: 11px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .12);
+    }
+
+    .progress span {
+      display: block;
+      width: 65%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 11px;
+    }
+
+    .card {
+      display: flex;
+      min-width: 0;
+      min-height: 315px;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 11px;
+      border: 1px solid var(--border);
+      border-radius: 21px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+
+    .book-cover {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      margin-bottom: 11px;
+      overflow: hidden;
+      border-radius: 15px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(56, 189, 248, .2),
+          rgba(37, 99, 235, .18)
+        );
+    }
+
+    .book-cover img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fallback-cover {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      place-items: center;
+      font-size: 45px;
+    }
+
+    .favorite-button {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(0, 0, 0, .45);
+      font-size: 17px;
+    }
+
+    .badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(37, 99, 235, .88);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .card h3 {
+      display: -webkit-box;
+      margin-bottom: 4px;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.35;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .author {
+      margin-bottom: 8px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      padding: 5px 7px;
+      border: 1px solid rgba(56, 189, 248, .2);
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(56, 189, 248, .1);
+      font-size: 9px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .empty,
+    .loading {
+      padding: 27px 12px;
+      text-align: center;
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+    }
+
+    .modal.show {
+      display: block;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .68);
+    }
+
+    .modal-content {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      max-width: 580px;
+      min-height: 310px;
+      margin: 0 auto;
+      padding: 23px 18px calc(22px + var(--safe-bottom));
+      border-radius: 27px 27px 0 0;
+      background: var(--surface);
+      animation: slideUp .24s ease;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 13px;
+      right: 15px;
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255, 255, 255, .1);
+      font-size: 21px;
+    }
+
+    .modal-book {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 15px;
+      padding-right: 35px;
+    }
+
+    .modal-cover {
+      width: 94px;
+      height: 126px;
+      flex: 0 0 auto;
+      overflow: hidden;
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+
+    .modal-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-info {
+      min-width: 0;
+    }
+
+    .modal-info h2 {
+      margin: 5px 0;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+
+    .modal-info p {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .modal-description {
+      margin: 0 0 17px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 20;
+      display: grid;
+      width: min(580px, 100%);
+      grid-template-columns: repeat(4, 1fr);
+      margin: 0 auto;
+      padding: 9px 12px calc(9px + var(--safe-bottom));
+      border-top: 1px solid var(--border);
+      background: rgba(15, 23, 42, .93);
+      backdrop-filter: blur(17px);
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 2px;
+      place-items: center;
+      border: 0;
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .nav-item span {
+      font-size: 19px;
+    }
+
+    .nav-item small {
+      font-size: 9px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    .toast {
+      position: fixed;
+      right: 16px;
+      bottom: calc(78px + var(--safe-bottom));
+      left: 16px;
+      z-index: 50;
+      display: none;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 12px 15px;
+      text-align: center;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      color: var(--text);
+      background: var(--surface-2);
+      box-shadow: var(--shadow);
+      animation: fadeIn .2s ease;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media (max-width: 420px) {
       .grid {
         grid-template-columns: 1fr;
       }
+
       .stats {
         grid-template-columns: 1fr;
       }
-      .title-wrap h1 {
-        font-size: 20px;
+
+      .card {
+        min-height: 0;
       }
     }
   </style>
 </head>
+
 <body>
-  <div class="app">
-    <div class="hero">
+  <main class="app">
+    <section class="hero">
       <div class="brand-row">
-        <div class="logo"><span>📚</span></div>
-        <div class="title-wrap">
+        <div class="logo">
+          <span>📚</span>
+        </div>
+
+        <div>
           <h1>RO_Bookshelf</h1>
-          <p>မင်းကြိုက်တဲ့စာအုပ်တွေကို လွယ်လွယ်ကူကူ ရှာဖွေပြီး ဖတ်နိုင်အောင်</p>
+          <p class="subtitle">
+            မင်းကြိုက်တဲ့စာအုပ်တွေကို ရှာဖွေဖတ်ရှုပါ
+          </p>
         </div>
       </div>
+
+      <p class="user-greeting" id="userGreeting">
+        မင်္ဂလာပါ 👋 စာဖတ်ခြင်းခရီးကို စတင်လိုက်ပါ
+      </p>
 
       <div class="stats">
         <div class="stat">
           <strong id="bookCount">0</strong>
-          <span>Available Books</span>
+          <span>စာအုပ်များ</span>
         </div>
+
         <div class="stat">
-          <strong id="dailyCount">1</strong>
-          <span>Daily Book</span>
+          <strong id="featuredCount">0</strong>
+          <span>Featured</span>
         </div>
+
         <div class="stat">
-          <strong id="langStatus">Auto</strong>
-          <span>Theme Sync</span>
+          <strong id="themeStatus">Web</strong>
+          <span>Theme</span>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="section">
+    <section class="section">
       <div class="section-header">
-        <h2>🔎 Search Books</h2>
+        <div>
+          <h2>🔎 စာအုပ်ရှာရန်</h2>
+          <p>စာအုပ်အမည် သို့မဟုတ် စာရေးသူဖြင့်ရှာပါ</p>
+        </div>
+
+        <button
+          class="text-button"
+          onclick="resetSearch()"
+        >
+          Reset
+        </button>
       </div>
 
       <div class="search-box">
-        <input id="searchInput" type="text" placeholder="စာအုပ်နာမည် / စာရေးသူနာမည်" />
-        <button class="btn btn-primary" onclick="searchLocal()">Search</button>
-      </div>
-    </div>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="စာအုပ်အမည် / စာရေးသူ"
+          autocomplete="off"
+        />
 
-    <div class="section">
+        <button
+          class="btn btn-primary"
+          onclick="applyFilters()"
+        >
+          Search
+        </button>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="section-header">
-        <h2>📖 Featured Books</h2>
-        <button onclick="resetFilter()">Reset</button>
+        <h2>🏷️ Categories</h2>
       </div>
 
-      <div class="grid" id="bookGrid">
-        <div class="card" data-id="book_1" data-title="မြန်မာစာအုပ် ၁" data-author="Author One">
-          <div class="book-cover">📘</div>
+      <div class="category-scroll" id="categoryList">
+        <button
+          class="category active"
+          data-category="all"
+          onclick="selectCategory('all', this)"
+        >
+          All
+        </button>
+
+        <button
+          class="category"
+          data-category="ဝတ္ထု"
+          onclick="selectCategory('ဝတ္ထု', this)"
+        >
+          ဝတ္ထု
+        </button>
+
+        <button
+          class="category"
+          data-category="ပညာရေး"
+          onclick="selectCategory('ပညာရေး', this)"
+        >
+          ပညာရေး
+        </button>
+
+        <button
+          class="category"
+          data-category="သမိုင်း"
+          onclick="selectCategory('သမိုင်း', this)"
+        >
+          သမိုင်း
+        </button>
+
+        <button
+          class="category"
+          data-category="စီးပွားရေး"
+          onclick="selectCategory('စီးပွားရေး', this)"
+        >
+          စီးပွားရေး
+        </button>
+
+        <button
+          class="category"
+          data-category="ဘာသာရေး"
+          onclick="selectCategory('ဘာသာရေး', this)"
+        >
+          ဘာသာရေး
+        </button>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>▶️ Continue Reading</h2>
+          <p>သင်နောက်ဆုံးဖတ်ထားသောစာအုပ်</p>
+        </div>
+
+        <button
+          class="text-button"
+          onclick="showMessage('Reading history ကို နောက်ပိုင်းထည့်ပေးပါမယ်')"
+        >
+          History
+        </button>
+      </div>
+
+      <div class="continue-card">
+        <div class="mini-cover">
+          <span>📘</span>
+        </div>
+
+        <div class="continue-info">
           <h3>မြန်မာစာအုပ် ၁</h3>
-          <div class="author">Author One</div>
-          <div class="meta-row">
-            <span class="pill">PDF</span>
-            <span class="pill">Popular</span>
-            <span class="pill">New</span>
-          </div>
-          <div class="actions">
-            <button class="btn btn-secondary" onclick="previewBook('book_1')">Preview</button>
-            <button class="btn btn-primary" onclick="downloadBook('book_1')">Download</button>
-          </div>
-        </div>
+          <p>Chapter 4 · 65% completed</p>
 
-        <div class="card" data-id="book_2" data-title="မြန်မာစာအုပ် ၂" data-author="Author Two">
-          <div class="book-cover">📗</div>
-          <h3>မြန်မာစာအုပ် ၂</h3>
-          <div class="author">Author Two</div>
-          <div class="meta-row">
-            <span class="pill">PDF</span>
-            <span class="pill">Trending</span>
-            <span class="pill">Hot</span>
+          <div class="progress">
+            <span></span>
           </div>
-          <div class="actions">
-            <button class="btn btn-secondary" onclick="previewBook('book_2')">Preview</button>
-            <button class="btn btn-primary" onclick="downloadBook('book_2')">Download</button>
-          </div>
-        </div>
 
-        <div class="card" data-id="book_3" data-title="မြန်မာစာအုပ် ၃" data-author="Author Three">
-          <div class="book-cover">📙</div>
-          <h3>မြန်မာစာအုပ် ၃</h3>
-          <div class="author">Author Three</div>
-          <div class="meta-row">
-            <span class="pill">PDF</span>
-            <span class="pill">Classic</span>
-            <span class="pill">Reader</span>
-          </div>
-          <div class="actions">
-            <button class="btn btn-secondary" onclick="previewBook('book_3')">Preview</button>
-            <button class="btn btn-primary" onclick="downloadBook('book_3')">Download</button>
-          </div>
-        </div>
-
-        <div class="card" data-id="book_4" data-title="မြန်မာစာအုပ် ၄" data-author="Author Four">
-          <div class="book-cover">📕</div>
-          <h3>မြန်မာစာအုပ် ၄</h3>
-          <div class="author">Author Four</div>
-          <div class="meta-row">
-            <span class="pill">PDF</span>
-            <span class="pill">Fresh</span>
-            <span class="pill">Story</span>
-          </div>
-          <div class="actions">
-            <button class="btn btn-secondary" onclick="previewBook('book_4')">Preview</button>
-            <button class="btn btn-primary" onclick="downloadBook('book_4')">Download</button>
-          </div>
+          <button
+            class="btn btn-primary"
+            onclick="showMessage('Reading feature ကို နောက်ပိုင်းထည့်ပေးပါမယ်')"
+          >
+            Continue Reading
+          </button>
         </div>
       </div>
+    </section>
 
-      <div class="empty" id="emptyState" style="display:none;">
-        မတွေ့သေးပါဘူး။ Search ကို ပြန်ရှာကြည့်ပါ။
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>📖 Featured Books</h2>
+          <p id="resultText">စာအုပ်များကို ပြသနေပါတယ်</p>
+        </div>
+
+        <button
+          class="text-button"
+          onclick="sortBooks()"
+        >
+          Sort
+        </button>
       </div>
+
+      <div
+        class="grid"
+        id="bookGrid"
+      ></div>
+
+      <div
+        class="empty"
+        id="emptyState"
+        hidden
+      >
+        စာအုပ်မတွေ့သေးပါ။ Search ပြန်လုပ်ကြည့်ပါ။
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button
+      class="nav-item active"
+      onclick="activateNav(this, 'home')"
+    >
+      <span>🏠</span>
+      <small>Home</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="activateNav(this, 'search')"
+    >
+      <span>🔎</span>
+      <small>Search</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="activateNav(this, 'library')"
+    >
+      <span>📚</span>
+      <small>Library</small>
+    </button>
+
+    <button
+      class="nav-item"
+      onclick="activateNav(this, 'profile')"
+    >
+      <span>👤</span>
+      <small>Profile</small>
+    </button>
+  </nav>
+
+  <div
+    class="modal"
+    id="bookModal"
+  >
+    <div
+      class="modal-backdrop"
+      onclick="closeModal()"
+    ></div>
+
+    <div class="modal-content">
+      <button
+        class="modal-close"
+        onclick="closeModal()"
+      >
+        ×
+      </button>
+
+      <div id="modalBody"></div>
     </div>
-
-    <div class="footer-space"></div>
   </div>
 
+  <div
+    class="toast"
+    id="toast"
+  ></div>
+
   <script>
-    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    /*
+      Telegram support is optional.
+      Browser မှာဖွင့်ရင် tg = null ဖြစ်နိုင်ပါတယ်။
+    */
+    const tg = window.Telegram?.WebApp || null;
 
-    const themeVars = {
-      bg_color: '--bg',
-      secondary_bg_color: '--surface',
-      text_color: '--text',
-      hint_color: '--muted',
-      link_color: '--accent',
-      button_color: '--accent-2',
-      button_text_color: '--text'
-    };
+    let selectedCategory = "all";
+    let sortAscending = false;
+    let savedBooks = [];
 
-    function applyTheme() {
-      if (!tg) return;
-      const root = document.documentElement;
-      const theme = tg.themeParams || {};
-      Object.entries(themeVars).forEach(([key, cssVar]) => {
-        if (theme[key]) root.style.setProperty(cssVar, theme[key]);
-      });
-      if (tg.colorScheme === 'light') {
-        root.style.setProperty('--bg', theme.bg_color || '#f8fafc');
-        root.style.setProperty('--surface', theme.secondary_bg_color || '#ffffff');
-        root.style.setProperty('--surface-2', theme.secondary_bg_color || '#e2e8f0');
-        root.style.setProperty('--text', theme.text_color || '#0f172a');
-        root.style.setProperty('--muted', theme.hint_color || '#475569');
-        root.style.setProperty('--border', 'rgba(0,0,0,0.08)');
+    const books = [
+      {
+        id: "book_1",
+        title: "မြန်မာစာအုပ် ၁",
+        author: "Author One",
+        category: "ဝတ္ထု",
+        format: "PDF",
+        size: "2.4 MB",
+        pages: 120,
+        cover: "https://placehold.co/360x480/2563eb/ffffff?text=Book+1",
+        description:
+          "ဖတ်ရှုရန် စိတ်ဝင်စားဖွယ်ကောင်းသော မြန်မာစာအုပ်တစ်အုပ်။",
+        featured: true,
+        rating: "4.8"
+      },
+      {
+        id: "book_2",
+        title: "မြန်မာစာအုပ် ၂",
+        author: "Author Two",
+        category: "ပညာရေး",
+        format: "PDF",
+        size: "3.1 MB",
+        pages: 210,
+        cover: "https://placehold.co/360x480/0ea5e9/ffffff?text=Book+2",
+        description:
+          "ပညာရေးနှင့် ဗဟုသုတဆိုင်ရာ စာအုပ်တစ်အုပ်။",
+        featured: true,
+        rating: "4.7"
+      },
+      {
+        id: "book_3",
+        title: "မြန်မာစာအုပ် ၃",
+        author: "Author Three",
+        category: "သမိုင်း",
+        format: "PDF",
+        size: "1.8 MB",
+        pages: 98,
+        cover: "https://placehold.co/360x480/7c3aed/ffffff?text=Book+3",
+        description:
+          "မြန်မာ့သမိုင်းကြောင်းကို လေ့လာနိုင်သော စာအုပ်။",
+        featured: false,
+        rating: "4.6"
+      },
+      {
+        id: "book_4",
+        title: "မြန်မာစာအုပ် ၄",
+        author: "Author Four",
+        category: "စီးပွားရေး",
+        format: "PDF",
+        size: "4.2 MB",
+        pages: 180,
+        cover: "https://placehold.co/360x480/ea580c/ffffff?text=Book+4",
+        description:
+          "စီးပွားရေးနှင့် ကိုယ်ပိုင်တိုးတက်ရေးအတွက် စာအုပ်။",
+        featured: true,
+        rating: "4.9"
+      },
+      {
+        id: "book_5",
+        title: "မြန်မာစာအုပ် ၅",
+        author: "Author Five",
+        category: "ဘာသာရေး",
+        format: "PDF",
+        size: "2.1 MB",
+        pages: 150,
+        cover: "https://placehold.co/360x480/16a34a/ffffff?text=Book+5",
+        description:
+          "စိတ်ငြိမ်သက်မှုနှင့် အတွေးအမြင်အတွက် ဖတ်ရှုနိုင်သောစာအုပ်။",
+        featured: false,
+        rating: "4.5"
+      },
+      {
+        id: "book_6",
+        title: "မြန်မာစာအုပ် ၆",
+        author: "Author Six",
+        category: "ဝတ္ထု",
+        format: "PDF",
+        size: "2.9 MB",
+        pages: 240,
+        cover: "https://placehold.co/360x480/be123c/ffffff?text=Book+6",
+        description:
+          "ဇာတ်လမ်းကောင်းတစ်ပုဒ်ကို ဖတ်ရှုခံစားနိုင်သော စာအုပ်။",
+        featured: false,
+        rating: "4.4"
       }
-      document.getElementById('langStatus').textContent = tg.colorScheme || 'Auto';
+    ];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function applyTelegramTheme() {
+      if (!tg) {
+        document.getElementById("themeStatus").textContent = "Web";
+        return;
+      }
+
+      const theme = tg.themeParams || {};
+      const root = document.documentElement;
+
+      const themeMap = {
+        bg_color: "--bg",
+        secondary_bg_color: "--surface",
+        text_color: "--text",
+        hint_color: "--muted",
+        link_color: "--accent",
+        button_color: "--accent-2"
+      };
+
+      Object.entries(themeMap).forEach(([key, variable]) => {
+        if (theme[key]) {
+          root.style.setProperty(variable, theme[key]);
+        }
+      });
+
+      document.body.classList.toggle(
+        "light",
+        tg.colorScheme === "light"
+      );
+
+      document.getElementById("themeStatus").textContent =
+        tg.colorScheme || "Auto";
+
+      tg.setHeaderColor?.(
+        theme.header_bg_color || theme.bg_color
+      );
+
+      tg.setBackgroundColor?.(
+        theme.bg_color
+      );
     }
 
     function initTelegram() {
       if (!tg) return;
+
       tg.ready();
       tg.expand();
-      applyTheme();
-      tg.onEvent('themeChanged', applyTheme);
+      applyTelegramTheme();
+
+      if (tg.initDataUnsafe?.user) {
+        const user = tg.initDataUnsafe.user;
+        const name = user.first_name || "မိတ်ဆွေ";
+
+        document.getElementById("userGreeting").textContent =
+          `မင်္ဂလာပါ ${name} 👋 စာဖတ်ခြင်းခရီးကို စတင်လိုက်ပါ`;
+      }
+
+      tg.onEvent("themeChanged", applyTelegramTheme);
     }
 
-    function downloadBook(bookId) {
-      const payload = JSON.stringify({
-        action: "download",
-        bookId: bookId
+    function renderBooks(list) {
+      const grid = document.getElementById("bookGrid");
+      const empty = document.getElementById("emptyState");
+      const resultText = document.getElementById("resultText");
+
+      if (!list.length) {
+        grid.innerHTML = "";
+        empty.hidden = false;
+        resultText.textContent = "ရလဒ်မတွေ့ပါ";
+        return;
+      }
+
+      empty.hidden = true;
+      resultText.textContent = `${list.length} အုပ် တွေ့ရှိပါတယ်`;
+
+      grid.innerHTML = list.map(book => {
+        const saved = savedBooks.includes(book.id);
+
+        return `
+          <article class="card">
+            <div class="book-cover">
+              <img
+                src="${escapeHtml(book.cover)}"
+                alt="${escapeHtml(book.title)}"
+                loading="lazy"
+                onerror="this.outerHTML='<div class=&quot;fallback-cover&quot;>📘</div>'"
+              />
+
+              <button
+                class="favorite-button"
+                onclick="toggleSave('${book.id}')"
+                aria-label="Save book"
+              >
+                ${saved ? "❤️" : "🤍"}
+              </button>
+
+              ${
+                book.featured
+                  ? '<span class="badge">FEATURED</span>'
+                  : ""
+              }
+            </div>
+
+            <h3>${escapeHtml(book.title)}</h3>
+
+            <div class="author">
+              ${escapeHtml(book.author)}
+            </div>
+
+            <div class="meta-row">
+              <span class="pill">
+                ${escapeHtml(book.category)}
+              </span>
+
+              <span class="pill">
+                ${escapeHtml(book.format)}
+              </span>
+
+              <span class="pill">
+                ${escapeHtml(book.size)}
+              </span>
+            </div>
+
+            <div class="actions">
+              <button
+                class="btn btn-secondary"
+                onclick="previewBook('${book.id}')"
+              >
+                Preview
+              </button>
+
+              <button
+                class="btn btn-primary"
+                onclick="downloadBook('${book.id}')"
+              >
+                Download
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function getFilteredBooks() {
+      const query = document
+        .getElementById("searchInput")
+        .value
+        .trim()
+        .toLowerCase();
+
+      let result = books.filter(book => {
+        const matchesQuery =
+          !query ||
+          book.title.toLowerCase().includes(query) ||
+          book.author.toLowerCase().includes(query) ||
+          book.category.toLowerCase().includes(query);
+
+        const matchesCategory =
+          selectedCategory === "all" ||
+          book.category === selectedCategory;
+
+        return matchesQuery && matchesCategory;
       });
 
-      if (tg) {
-        tg.sendData(payload);
-      } else {
-        alert(payload);
+      if (sortAscending) {
+        result.sort((a, b) =>
+          a.title.localeCompare(b.title)
+        );
       }
+
+      return result;
+    }
+
+    function applyFilters() {
+      renderBooks(getFilteredBooks());
+    }
+
+    function selectCategory(category, button) {
+      selectedCategory = category;
+
+      document
+        .querySelectorAll(".category")
+        .forEach(item => {
+          item.classList.remove("active");
+        });
+
+      button.classList.add("active");
+      applyFilters();
+    }
+
+    function resetSearch() {
+      document.getElementById("searchInput").value = "";
+      selectedCategory = "all";
+      sortAscending = false;
+
+      document
+        .querySelectorAll(".category")
+        .forEach(item => {
+          item.classList.remove("active");
+        });
+
+      document
+        .querySelector('[data-category="all"]')
+        ?.classList.add("active");
+
+      renderBooks(books);
+    }
+
+    function sortBooks() {
+      sortAscending = !sortAscending;
+      applyFilters();
+
+      showMessage(
+        sortAscending
+          ? "A-Z ဖြင့်စီထားပါတယ်"
+          : "မူလအစီအစဉ်သို့ ပြန်ထားပါတယ်"
+      );
+    }
+
+    function coverHtml(book, className) {
+      return `
+        <div class="${className}">
+          <img
+            src="${escapeHtml(book.cover)}"
+            alt="${escapeHtml(book.title)}"
+            onerror="this.outerHTML='<div class=&quot;fallback-cover&quot;>📘</div>'"
+          />
+        </div>
+      `;
     }
 
     function previewBook(bookId) {
-      const card = document.querySelector(`[data-id="${bookId}"]`);
-      if (!card) return;
-      const title = card.getAttribute('data-title') || 'Book';
-      const author = card.getAttribute('data-author') || '';
-      alert(`${title}
-${author}`);
+      const book = books.find(item => item.id === bookId);
+
+      if (!book) return;
+
+      document.getElementById("modalBody").innerHTML = `
+        <div class="modal-book">
+          ${coverHtml(book, "modal-cover")}
+
+          <div class="modal-info">
+            <h2>${escapeHtml(book.title)}</h2>
+            <p>${escapeHtml(book.author)}</p>
+            <p>
+              ${escapeHtml(book.category)}
+              · ${escapeHtml(book.format)}
+            </p>
+            <p>
+              ${escapeHtml(book.pages)} pages
+              · ${escapeHtml(book.size)}
+            </p>
+            <p>⭐ ${escapeHtml(book.rating)}</p>
+          </div>
+        </div>
+
+        <p class="modal-description">
+          ${escapeHtml(book.description)}
+        </p>
+
+        <div class="modal-actions">
+          <button
+            class="btn btn-secondary"
+            onclick="toggleSave('${book.id}')"
+          >
+            ${savedBooks.includes(book.id)
+              ? "❤️ Saved"
+              : "🤍 Save"}
+          </button>
+
+          <button
+            class="btn btn-primary"
+            onclick="downloadBook('${book.id}')"
+          >
+            📥 Download
+          </button>
+        </div>
+      `;
+
+      document
+        .getElementById("bookModal")
+        .classList.add("show");
+
+      if (tg?.BackButton) {
+        tg.BackButton.show();
+        tg.BackButton.onClick(closeModal);
+      }
     }
 
-    function searchLocal() {
-      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
-      const cards = [...document.querySelectorAll('.card')];
-      let visible = 0;
+    function closeModal() {
+      document
+        .getElementById("bookModal")
+        .classList.remove("show");
 
-      cards.forEach(card => {
-        const title = (card.getAttribute('data-title') || '').toLowerCase();
-        const author = (card.getAttribute('data-author') || '').toLowerCase();
-        const match = !q || title.includes(q) || author.includes(q);
-        card.style.display = match ? 'flex' : 'none';
-        if (match) visible++;
+      tg?.BackButton?.hide();
+    }
+
+    function downloadBook(bookId) {
+      const book = books.find(item => item.id === bookId);
+
+      if (!book) return;
+
+      showMessage(
+        `${book.title}
+နောက်ပိုင်း Telegram Bot ချိတ်ပြီး Download လုပ်ပါမယ်`
+      );
+
+      /*
+        နောက်ပိုင်း API ချိတ်တဲ့အခါ ဒီ function ကို
+        fetch() code ဖြင့် ပြန်အစားထိုးနိုင်ပါတယ်။
+
+        ဥပမာ:
+
+        fetch("https://your-api.com/api/books/download", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `tma ${tg.initData}`
+          },
+          body: JSON.stringify({
+            book_id: bookId
+          })
+        });
+      */
+    }
+
+    function toggleSave(bookId) {
+      if (savedBooks.includes(bookId)) {
+        savedBooks = savedBooks.filter(id => id !== bookId);
+        showMessage("My Library မှ ဖယ်ရှားပြီးပါပြီ");
+      } else {
+        savedBooks.push(bookId);
+        showMessage("My Library ထဲသို့ သိမ်းပြီးပါပြီ");
+      }
+
+      localStorage.setItem(
+        "ro_saved_books",
+        JSON.stringify(savedBooks)
+      );
+
+      applyFilters();
+      closeModal();
+    }
+
+    function loadSavedBooks() {
+      try {
+        savedBooks = JSON.parse(
+          localStorage.getItem("ro_saved_books") || "[]"
+        );
+      } catch (error) {
+        savedBooks = [];
+      }
+    }
+
+    function activateNav(button, section) {
+      document
+        .querySelectorAll(".nav-item")
+        .forEach(item => {
+          item.classList.remove("active");
+        });
+
+      button.classList.add("active");
+
+      if (section === "home") {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+
+      if (section === "search") {
+        document
+          .getElementById("searchInput")
+          .focus();
+
+        window.scrollTo({
+          top: 200,
+          behavior: "smooth"
+        });
+      }
+
+      if (section === "library") {
+        showMessage(
+          "My Library feature ကို နောက်ပိုင်းထည့်ပေးပါမယ်"
+        );
+      }
+
+      if (section === "profile") {
+        showMessage(
+          "Profile feature ကို နောက်ပိုင်းထည့်ပေးပါမယ်"
+        );
+      }
+    }
+
+    function showMessage(message) {
+      if (tg?.showAlert) {
+        tg.showAlert(message);
+        return;
+      }
+
+      const toast = document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2400);
+    }
+
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", applyFilters);
+
+    document
+      .getElementById("searchInput")
+      .addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+          applyFilters();
+        }
       });
 
-      document.getElementById('emptyState').style.display = visible ? 'none' : 'block';
-    }
-
-    function resetFilter() {
-      document.getElementById('searchInput').value = '';
-      document.querySelectorAll('.card').forEach(card => card.style.display = 'flex');
-      document.getElementById('emptyState').style.display = 'none';
-    }
-
-    document.getElementById('searchInput').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') searchLocal();
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
     });
 
-    document.getElementById('bookCount').textContent = document.querySelectorAll('.card').length;
+    loadSavedBooks();
     initTelegram();
+
+    document.getElementById("bookCount").textContent =
+      books.length;
+
+    document.getElementById("featuredCount").textContent =
+      books.filter(book => book.featured).length;
+
+    renderBooks(books);
   </script>
 </body>
 </html>
