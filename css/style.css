@@ -1,31 +1,24 @@
 /* ===== Root Variables ===== */
 :root {
-    /* Backgrounds */
     --bg-deep: #0A0C1F;
     --bg-surface: #101A2D;
     --bg-card: #122A25;
     --bg-card-elevated: #183A2C;
-
-    /* Text */
     --text-primary: #F5F1E6;
     --text-secondary: #B9C2C8;
     --text-muted: #7F8C96;
-
-    /* Accent */
     --gold: #F0C057;
     --blue: #60A4D9;
     --green: #1A4528;
     --bloom: #7DB39B;
-
-    /* Borders */
+    --constellation: #9B86D8;
     --border-gold: rgba(240, 192, 87, 0.18);
     --border-blue: rgba(96, 164, 217, 0.22);
-
-    /* Font */
+    --glow-gold: rgba(240, 192, 87, 0.15);
+    --glow-blue: rgba(96, 164, 217, 0.12);
     --font: 'Inter', -apple-system, sans-serif;
 }
 
-/* ===== Reset ===== */
 * {
     margin: 0;
     padding: 0;
@@ -38,7 +31,9 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     padding-bottom: 80px;
-    -webkit-font-smoothing: antialiased;
+    background-image: 
+        radial-gradient(ellipse at 20% 50%, rgba(96, 164, 217, 0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(240, 192, 87, 0.03) 0%, transparent 50%);
 }
 
 /* ===== Scrollbar ===== */
@@ -53,13 +48,14 @@ body {
     border-radius: 10px;
 }
 
-/* ===== Bottom Navigation ===== */
+/* ===== Navigation ===== */
 .bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #080A18;
+    background: rgba(8, 10, 24, 0.92);
+    backdrop-filter: blur(12px);
     display: flex;
     justify-content: space-around;
     padding: 8px 0 12px;
@@ -89,7 +85,7 @@ body {
 
 .nav-item.active .nav-icon {
     color: var(--gold);
-    text-shadow: 0 0 16px rgba(240, 192, 87, 0.25);
+    text-shadow: 0 0 20px var(--glow-gold);
 }
 
 .nav-item.active .nav-label {
@@ -107,7 +103,7 @@ body {
     padding: 16px 16px 24px;
     max-width: 480px;
     margin: 0 auto;
-    animation: fadeUp 0.4s ease;
+    animation: fadeUp 0.5s ease;
 }
 
 .page.active {
@@ -117,7 +113,7 @@ body {
 @keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translateY(12px);
+        transform: translateY(16px);
     }
     to {
         opacity: 1;
@@ -139,7 +135,13 @@ body {
 .logo-icon {
     font-size: 28px;
     color: var(--gold);
-    text-shadow: 0 0 30px rgba(240, 192, 87, 0.2);
+    text-shadow: 0 0 30px var(--glow-gold);
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { text-shadow: 0 0 20px var(--glow-gold); }
+    50% { text-shadow: 0 0 40px var(--glow-gold), 0 0 60px rgba(240, 192, 87, 0.08); }
 }
 
 .logo-text {
@@ -171,7 +173,7 @@ body {
 
 .search-box:focus-within {
     border-color: var(--gold);
-    box-shadow: 0 0 20px rgba(240, 192, 87, 0.06);
+    box-shadow: 0 0 25px var(--glow-gold);
 }
 
 .search-icon {
@@ -225,6 +227,7 @@ body {
     color: var(--bg-deep);
     border-color: var(--gold);
     font-weight: 600;
+    box-shadow: 0 0 25px var(--glow-gold);
 }
 
 /* ===== Book Grid ===== */
@@ -235,7 +238,7 @@ body {
     padding-bottom: 20px;
 }
 
-/* ===== Book Card (Horizontal) ===== */
+/* ===== Book Card ===== */
 .book-card {
     background: var(--bg-card);
     border-radius: 16px;
@@ -246,10 +249,29 @@ body {
     border: 1px solid var(--border-gold);
     transition: all 0.3s;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.book-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 30%, var(--glow-gold), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
 }
 
 .book-card:active {
     transform: scale(0.98);
+}
+
+.book-card:active::before {
+    opacity: 1;
 }
 
 .book-cover {
@@ -260,16 +282,27 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 32px;
     background: var(--bg-surface);
     border: 1px solid var(--border-blue);
     overflow: hidden;
+    position: relative;
 }
 
-.book-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.book-cover.glow-seed {
+    box-shadow: 0 0 30px var(--glow-blue);
+}
+
+.book-cover.glow-sprout {
+    box-shadow: 0 0 40px rgba(125, 179, 155, 0.2);
+}
+
+.book-cover.glow-bloom {
+    box-shadow: 0 0 50px rgba(240, 192, 87, 0.2);
+}
+
+.book-cover.glow-constellation {
+    box-shadow: 0 0 60px rgba(155, 134, 216, 0.25);
 }
 
 .book-info {
@@ -299,38 +332,75 @@ body {
     color: var(--text-muted);
 }
 
+/* ===== Progress ===== */
 .book-progress {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     margin-top: 6px;
 }
 
 .progress-bar {
-    height: 3px;
+    height: 4px;
     flex: 1;
-    background: var(--bg-surface);
+    background: rgba(255, 255, 255, 0.06);
     border-radius: 10px;
     overflow: hidden;
+    position: relative;
 }
 
 .progress-fill {
     height: 100%;
-    background: var(--gold);
     border-radius: 10px;
-    transition: width 0.6s;
+    transition: width 0.8s ease;
+    background: var(--gold);
+    box-shadow: 0 0 15px var(--glow-gold);
+}
+
+.progress-fill.sprout {
+    background: var(--bloom);
+    box-shadow: 0 0 15px rgba(125, 179, 155, 0.2);
+}
+
+.progress-fill.bud {
+    background: var(--blue);
+    box-shadow: 0 0 15px var(--glow-blue);
+}
+
+.progress-fill.bloom {
+    background: var(--gold);
+    box-shadow: 0 0 20px var(--glow-gold);
+}
+
+.progress-fill.constellation {
+    background: var(--constellation);
+    box-shadow: 0 0 25px rgba(155, 134, 216, 0.3);
 }
 
 .progress-label {
     font-size: 11px;
-    color: var(--gold);
     font-weight: 500;
+    min-width: 32px;
+    text-align: right;
+}
+
+.progress-label.gold {
+    color: var(--gold);
+}
+.progress-label.blue {
+    color: var(--blue);
+}
+.progress-label.bloom {
+    color: var(--bloom);
+}
+.progress-label.constellation {
+    color: var(--constellation);
 }
 
 .book-status {
-    font-size: 16px;
+    font-size: 18px;
     flex-shrink: 0;
-    margin-left: 4px;
+    transition: all 0.5s;
 }
 
 /* ===== Modal ===== */
@@ -338,13 +408,13 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(10, 12, 31, 0.85);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 200;
     padding: 20px;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.4s ease;
 }
 
 .modal.hidden {
@@ -370,12 +440,19 @@ body {
     width: 100%;
     text-align: center;
     border: 1px solid var(--border-gold);
+    box-shadow: 0 0 60px rgba(240, 192, 87, 0.05);
 }
 
 .modal-icon {
-    font-size: 48px;
+    font-size: 52px;
     display: block;
     margin-bottom: 12px;
+    animation: floatIcon 2s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
 }
 
 .modal-content h3 {
@@ -403,6 +480,7 @@ body {
     transition: all 0.3s;
     width: 100%;
     font-family: var(--font);
+    box-shadow: 0 0 30px var(--glow-gold);
 }
 
 .btn-gold:active {
