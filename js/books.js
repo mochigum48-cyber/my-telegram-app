@@ -11,7 +11,6 @@ const books = [
         rating: 4.7,
         views: 1240,
         progress: 65,
-        status: '🌿',
         description: 'A mysterious garden appears only at midnight...'
     },
     {
@@ -25,7 +24,6 @@ const books = [
         rating: 4.9,
         views: 840,
         progress: 100,
-        status: '✦',
         description: 'Love poems written under the stars...'
     },
     {
@@ -39,7 +37,6 @@ const books = [
         rating: 4.8,
         views: 2100,
         progress: 30,
-        status: '🌱',
         description: 'A quest for the philosopher\'s stone...'
     },
     {
@@ -53,7 +50,6 @@ const books = [
         rating: 4.5,
         views: 680,
         progress: 80,
-        status: '🌸',
         description: 'Ancient plant medicine and healing...'
     },
     {
@@ -67,10 +63,61 @@ const books = [
         rating: 4.6,
         views: 920,
         progress: 20,
-        status: '🌱',
         description: 'Forgotten civilizations and their secrets...'
+    },
+    {
+        id: 'book-06',
+        title: 'The Celestial Map',
+        author: 'Astra Nova',
+        category: 'fantasy',
+        cover: '✦',
+        fileType: 'PDF',
+        fileSize: '5.0 MB',
+        rating: 4.9,
+        views: 1560,
+        progress: 95,
+        description: 'A map that leads to the stars...'
     }
 ];
+
+// ===== Growth System =====
+function getGrowthStage(progress) {
+    if (progress >= 100) return {
+        status: '✦',
+        label: 'Constellation',
+        cssClass: 'constellation',
+        color: 'var(--constellation)',
+        glow: 'glow-constellation'
+    };
+    if (progress >= 71) return {
+        status: '🌸',
+        label: 'Bloom',
+        cssClass: 'bloom',
+        color: 'var(--bloom)',
+        glow: 'glow-bloom'
+    };
+    if (progress >= 31) return {
+        status: '🌿',
+        label: 'Sprout',
+        cssClass: 'sprout',
+        color: 'var(--blue)',
+        glow: 'glow-sprout'
+    };
+    if (progress > 0) return {
+        status: '🌱',
+        label: 'Seed',
+        cssClass: 'seed',
+        color: 'var(--text-muted)',
+        glow: 'glow-seed'
+    };
+    return {
+        status: '🌰',
+        label: 'Dormant',
+        cssClass: 'dormant',
+        color: 'var(--text-muted)',
+        glow: ''
+    };
+}
 
 // ===== Render Books =====
 function renderBooks(bookList) {
@@ -87,39 +134,45 @@ function renderBooks(bookList) {
         return;
     }
 
-    grid.innerHTML = bookList.map(book => `
-        <div class="book-card" data-id="${book.id}" onclick="openBook('${book.id}')">
-            <div class="book-cover">${book.cover}</div>
-            <div class="book-info">
-                <div class="book-title">${book.title}</div>
-                <div class="book-author">${book.author}</div>
-                <div class="book-meta">
-                    <span>${book.fileType}</span>
-                    <span>•</span>
-                    <span>${book.fileSize}</span>
-                    <span>•</span>
-                    <span>⭐ ${book.rating}</span>
-                </div>
-                <div class="book-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${book.progress}%"></div>
+    grid.innerHTML = bookList.map(book => {
+        const stage = getGrowthStage(book.progress);
+        const progressColor = stage.cssClass;
+
+        return `
+            <div class="book-card" data-id="${book.id}" onclick="openBook('${book.id}')">
+                <div class="book-cover ${stage.glow}">${book.cover}</div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">${book.author}</div>
+                    <div class="book-meta">
+                        <span>${book.fileType}</span>
+                        <span>•</span>
+                        <span>${book.fileSize}</span>
+                        <span>•</span>
+                        <span>⭐ ${book.rating}</span>
                     </div>
-                    <span class="progress-label">${book.progress}%</span>
-                    <span class="book-status">${book.status}</span>
+                    <div class="book-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill ${progressColor}" style="width: ${book.progress}%"></div>
+                        </div>
+                        <span class="progress-label ${progressColor}">${book.progress}%</span>
+                        <span class="book-status">${stage.status}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
-// ===== Open Book Detail =====
+// ===== Open Book =====
 function openBook(bookId) {
     const book = books.find(b => b.id === bookId);
     if (!book) return;
 
-    hapticLight();
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    }
 
-    // Ad Modal ကိုပြမယ် (Download အတွက်)
     showAdModal(book);
 }
 
@@ -128,31 +181,33 @@ function showAdModal(book) {
     const modal = document.getElementById('adModal');
     if (!modal) return;
 
-    // Modal content ကို update လုပ်မယ်
+    const stage = getGrowthStage(book.progress);
+
     const icon = modal.querySelector('.modal-icon');
     const title = modal.querySelector('h3');
     const desc = modal.querySelector('p');
     const watchBtn = document.getElementById('watchAdBtn');
 
-    if (icon) icon.textContent = book.cover || '🌱';
+    if (icon) icon.textContent = stage.status;
     if (title) title.textContent = `"${book.title}"`;
     if (desc) desc.textContent = `Watch a short ad to download this book`;
 
     modal.classList.remove('hidden');
 
-    // Watch Ad Button
     if (watchBtn) {
         watchBtn.onclick = function() {
-            // Ad ကြည့်ပြီးကြောင်း Bot ကို အကြောင်းကြားမယ်
-            notifyBotAdCompleted(book.id);
-            hapticSuccess();
-            // Modal ကိုပိတ်မယ်
+            if (window.notifyBotAdCompleted) {
+                window.notifyBotAdCompleted(book.id);
+            }
             closeAdModal();
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+            }
         };
     }
 }
 
-// ===== Close Ad Modal =====
+// ===== Close Modal =====
 function closeAdModal() {
     const modal = document.getElementById('adModal');
     if (modal) modal.classList.add('hidden');
@@ -192,10 +247,10 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// ===== Close Modal with Cancel Button =====
 document.addEventListener('DOMContentLoaded', function() {
     const closeBtn = document.getElementById('closeModalBtn');
     if (closeBtn) {
         closeBtn.addEventListener('click', closeAdModal);
     }
-});}
+    renderBooks(books);
+});
