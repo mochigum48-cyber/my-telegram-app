@@ -270,11 +270,14 @@
       tg.expand();
     }
 
+    // ===== Bot API URL =====
+    const BOT_API_URL = 'https://your-bot-domain.com/api/books';  // ← ဒီမှာ ခင်ဗျားရဲ့ Bot URL ထည့်ပါ
+
     // ===== Book List from Bot =====
     async function loadBooks() {
       try {
-        // Bot ဆီက Book List ကို WebAppData နဲ့ ယူမယ်
-        const response = await fetch('/api/books');  // ဒါက Bot API နဲ့ ချိတ်မယ်
+        // Bot ဆီက Book List ကို API နဲ့ ယူမယ်
+        const response = await fetch(BOT_API_URL);
         const books = await response.json();
 
         const bookList = document.getElementById('bookList');
@@ -300,6 +303,7 @@
         });
       } catch (error) {
         console.error('Failed to load books:', error);
+        document.getElementById('bookList').innerHTML = '<p style="text-align:center;padding:20px;">❌ စာအုပ်များ ရယူရန် မအောင်မြင်ပါ။</p>';
       }
     }
 
