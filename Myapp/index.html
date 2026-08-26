@@ -1,447 +1,115 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reader's Odyssey</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1,
-             maximum-scale=1, user-scalable=no"
-  >
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
 
-  <meta name="theme-color" content="#0A0C1F">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css" />
 
-  <title>Reader's Odyssey</title>
-
-  <link rel="stylesheet" href="css/style.css">
-
-  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+    <!-- Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-
 <body>
-  <div class="star-field">
-    <span class="star star-1">✦</span>
-    <span class="star star-2">✧</span>
-    <span class="star star-3">✦</span>
-    <span class="star star-4">·</span>
-    <span class="star star-5">✧</span>
-    <span class="star star-6">·</span>
-    <span class="star star-7">✦</span>
-  </div>
 
-  <main class="app-shell">
-    <!-- Header -->
-    <header class="top-header">
-      <div class="brand">
-        <div class="brand-orbit">
-          <span class="brand-seed">✦</span>
-        </div>
-
-        <div>
-          <p class="eyebrow">A CELESTIAL LIBRARY</p>
-          <h1>Reader's Odyssey</h1>
-        </div>
-      </div>
-
-      <button
-        class="icon-button"
-        type="button"
-        onclick="openProfile()"
-        aria-label="Open profile"
-      >
-        ◌
-      </button>
-    </header>
-
-    <!-- Welcome -->
-    <section class="welcome-section">
-      <p class="welcome-label">YOUR READING GARDEN</p>
-
-      <h2>
-        Let every story<br>
-        <span>come alive.</span>
-      </h2>
-
-      <p class="welcome-text">
-        စာအုပ်တစ်အုပ်စီက မင်းရဲ့ကိုယ်ပိုင်ကြယ်စုထဲက
-        အလင်းတစ်စင်းဖြစ်လာမယ်။
-      </p>
-    </section>
-
-    <!-- Search -->
-    <section class="search-section">
-      <div class="search-box">
-        <span class="search-icon">⌕</span>
-
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Search your next story..."
-          autocomplete="off"
-        />
-
-        <button
-          type="button"
-          class="clear-search"
-          id="clearSearch"
-          onclick="clearSearch()"
-          aria-label="Clear search"
-        >
-          ×
+    <!-- ===== Navigation Bottom ===== -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-page="home">
+            <span class="nav-icon">✦</span>
+            <span class="nav-label">Home</span>
         </button>
-      </div>
-    </section>
-
-    <!-- Categories -->
-    <section class="section-block">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">EXPLORE</p>
-          <h2>Find your constellation</h2>
-        </div>
-      </div>
-
-      <div class="category-row">
-        <button
-          class="category-chip active"
-          data-category="all"
-          onclick="selectCategory('all', this)"
-        >
-          All Stories
+        <button class="nav-item" data-page="explore">
+            <span class="nav-icon">✧</span>
+            <span class="nav-label">Explore</span>
         </button>
-
-        <button
-          class="category-chip"
-          data-category="ဝတ္ထု"
-          onclick="selectCategory('ဝတ္ထု', this)"
-        >
-          ဝတ္ထု
+        <button class="nav-item" data-page="library">
+            <span class="nav-icon">◈</span>
+            <span class="nav-label">Library</span>
         </button>
-
-        <button
-          class="category-chip"
-          data-category="ပညာရေး"
-          onclick="selectCategory('ပညာရေး', this)"
-        >
-          ပညာရေး
+        <button class="nav-item" data-page="profile">
+            <span class="nav-icon">☽</span>
+            <span class="nav-label">Profile</span>
         </button>
+    </nav>
 
-        <button
-          class="category-chip"
-          data-category="သမိုင်း"
-          onclick="selectCategory('သမိုင်း', this)"
-        >
-          သမိုင်း
-        </button>
+    <!-- ===== Pages ===== -->
+    <main id="app">
+        <!-- Home Page -->
+        <section id="page-home" class="page active">
+            <div class="header">
+                <div class="logo">
+                    <span class="logo-icon">✦</span>
+                    <span class="logo-text">Reader's Odyssey</span>
+                </div>
+                <div class="header-subtitle">Explore the world through books</div>
+            </div>
 
-        <button
-          class="category-chip"
-          data-category="စိတ်ကူးယဉ်"
-          onclick="selectCategory('စိတ်ကူးယဉ်', this)"
-        >
-          စိတ်ကူးယဉ်
-        </button>
-      </div>
-    </section>
+            <!-- Search -->
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search books..." />
+            </div>
 
-    <!-- Reading Progress -->
-    <section class="section-block">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">YOUR JOURNEY</p>
-          <h2>Growing stories</h2>
+            <!-- Categories -->
+            <div class="category-scroll">
+                <button class="category-chip active" data-cat="all">All</button>
+                <button class="category-chip" data-cat="mystery">Mystery</button>
+                <button class="category-chip" data-cat="romance">Romance</button>
+                <button class="category-chip" data-cat="fantasy">Fantasy</button>
+                <button class="category-chip" data-cat="knowledge">Knowledge</button>
+                <button class="category-chip" data-cat="history">History</button>
+            </div>
+
+            <!-- Book Grid -->
+            <div class="book-grid" id="bookGrid"></div>
+        </section>
+
+        <!-- Explore Page -->
+        <section id="page-explore" class="page">
+            <div class="page-placeholder">
+                <span class="placeholder-icon">✧</span>
+                <h2>Explore</h2>
+                <p>Discover new books and authors</p>
+            </div>
+        </section>
+
+        <!-- Library Page -->
+        <section id="page-library" class="page">
+            <div class="page-placeholder">
+                <span class="placeholder-icon">◈</span>
+                <h2>My Library</h2>
+                <p>Your downloaded books will appear here</p>
+            </div>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="page-profile" class="page">
+            <div class="page-placeholder">
+                <span class="placeholder-icon">☽</span>
+                <h2>Profile</h2>
+                <p>Your reading journey</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== Ad Modal ===== -->
+    <div id="adModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-icon">🌱</div>
+            <h3>Watch Ad & Unlock</h3>
+            <p>Watch a short ad to download this book</p>
+            <button id="watchAdBtn" class="btn-gold">▶ Watch Ad</button>
+            <button id="closeModalBtn" class="btn-ghost">Cancel</button>
         </div>
-
-        <button
-          class="small-link"
-          type="button"
-          onclick="showMessage('Reading history ကို နောက်ပိုင်းထည့်ပေးပါမယ်')"
-        >
-          View all
-        </button>
-      </div>
-
-      <div class="journey-card">
-        <div class="journey-visual">
-          <div class="constellation constellation-a">✦ · ✧</div>
-          <div class="journey-glow"></div>
-          <div class="journey-flower">✿</div>
-          <div class="journey-vine">⌁</div>
-        </div>
-
-        <div class="journey-content">
-          <p class="journey-status">BLOOMING · 65%</p>
-
-          <h3>မိုးရာသီရဲ့အိပ်မက်</h3>
-
-          <p class="journey-author">
-            by မောင်မောင်
-          </p>
-
-          <div class="progress-track">
-            <span style="width: 65%"></span>
-          </div>
-
-          <button
-            class="primary-button compact-button"
-            type="button"
-            onclick="showMessage('Reading feature ကို နောက်ပိုင်းထည့်ပေးပါမယ်')"
-          >
-            Continue reading <span>→</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Books -->
-    <section class="section-block">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">CURATED FOR YOU</p>
-          <h2>Featured blooms</h2>
-        </div>
-
-        <button
-          class="small-link"
-          type="button"
-          onclick="sortBooks()"
-        >
-          Sort
-        </button>
-      </div>
-
-      <div
-        class="horizontal-book-list"
-        id="featuredBooks"
-      ></div>
-
-      <div class="scroll-note">
-        <span>✦</span>
-        Swipe to explore
-        <span>→</span>
-      </div>
-    </section>
-
-    <!-- Popular Books -->
-    <section class="section-block">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">MOST LOVED</p>
-          <h2>Popular constellations</h2>
-        </div>
-      </div>
-
-      <div
-        class="horizontal-book-list"
-        id="popularBooks"
-      ></div>
-
-      <div class="scroll-note">
-        <span>✦</span>
-        Swipe to explore
-        <span>→</span>
-      </div>
-    </section>
-
-    <!-- Recent Books -->
-    <section class="section-block">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">JUST ARRIVED</p>
-          <h2>Newly planted</h2>
-        </div>
-      </div>
-
-      <div
-        class="horizontal-book-list"
-        id="recentBooks"
-      ></div>
-
-      <div
-        class="empty-state"
-        id="emptyState"
-        hidden
-      >
-        No stories found in this constellation.
-      </div>
-    </section>
-
-    <!-- Profile Panel -->
-    <section
-      class="profile-panel"
-      id="profilePanel"
-      hidden
-    >
-      <div class="profile-panel-header">
-        <div>
-          <p class="section-kicker">YOUR PROFILE</p>
-          <h2>Reader's garden</h2>
-        </div>
-
-        <button
-          class="close-panel"
-          type="button"
-          onclick="closeProfile()"
-        >
-          ×
-        </button>
-      </div>
-
-      <div class="profile-card">
-        <div class="profile-avatar" id="profileAvatar">
-          ◌
-        </div>
-
-        <div class="profile-user-info">
-          <h3 id="profileName">Reader</h3>
-          <p id="profileUsername">@reader</p>
-          <span>Wandering among stories</span>
-        </div>
-      </div>
-
-      <div class="profile-stats">
-        <div>
-          <strong id="readCount">12</strong>
-          <small>Read</small>
-        </div>
-
-        <div>
-          <strong id="savedCount">0</strong>
-          <small>Saved</small>
-        </div>
-
-        <div>
-          <strong>65%</strong>
-          <small>Journey</small>
-        </div>
-      </div>
-
-      <div class="profile-menu">
-        <button
-          type="button"
-          onclick="showMessage('My Library ကို နောက်ပိုင်း API နှင့်ချိတ်ပါမယ်')"
-        >
-          <span>✧</span>
-          <span>My Library</span>
-          <b>›</b>
-        </button>
-
-        <button
-          type="button"
-          onclick="showMessage('Reading history ကို နောက်ပိုင်းထည့်ပေးပါမယ်')"
-        >
-          <span>◷</span>
-          <span>Reading History</span>
-          <b>›</b>
-        </button>
-
-        <button
-          type="button"
-          onclick="toggleTheme()"
-        >
-          <span>☾</span>
-          <span>Night Garden</span>
-          <b id="themeText">ON</b>
-        </button>
-
-        <button
-          type="button"
-          onclick="showMessage('Language setting ကို နောက်ပိုင်းထည့်ပေးပါမယ်')"
-        >
-          <span>⌘</span>
-          <span>Language</span>
-          <b>မြန်မာ</b>
-        </button>
-
-        <button
-          type="button"
-          onclick="showMessage('Contact Admin ကို နောက်ပိုင်း Bot နှင့်ချိတ်ပါမယ်')"
-        >
-          <span>✉</span>
-          <span>Help & Support</span>
-          <b>›</b>
-        </button>
-      </div>
-
-      <p class="app-version">
-        Reader's Odyssey · Version 1.0.0
-      </p>
-    </section>
-  </main>
-
-  <!-- Book Details Modal -->
-  <div
-    class="modal"
-    id="bookModal"
-    hidden
-  >
-    <div
-      class="modal-backdrop"
-      onclick="closeBookModal()"
-    ></div>
-
-    <div class="modal-sheet">
-      <button
-        class="modal-close"
-        type="button"
-        onclick="closeBookModal()"
-      >
-        ×
-      </button>
-
-      <div id="modalBody"></div>
     </div>
-  </div>
 
-  <!-- Toast -->
-  <div
-    class="toast"
-    id="toast"
-  ></div>
-
-  <!-- Bottom Navigation -->
-  <nav class="bottom-navigation">
-    <button
-      class="nav-button active"
-      type="button"
-      onclick="goHome(this)"
-    >
-      <span>⌂</span>
-      <small>Garden</small>
-    </button>
-
-    <button
-      class="nav-button"
-      type="button"
-      onclick="goExplore(this)"
-    >
-      <span>⌕</span>
-      <small>Explore</small>
-    </button>
-
-    <button
-      class="nav-button"
-      type="button"
-      onclick="goLibrary(this)"
-    >
-      <span>✧</span>
-      <small>Library</small>
-    </button>
-
-    <button
-      class="nav-button"
-      type="button"
-      onclick="goProfile(this)"
-    >
-      <span>◌</span>
-      <small>Profile</small>
-    </button>
-  </nav>
-
-  <script src="js/data.js"></script>
-  <script src="js/books.js"></script>
-  <script src="js/profile.js"></script>
-  <script src="js/telegram.js"></script>
-  <script src="js/app.js"></script>
+    <!-- JavaScript -->
+    <script src="js/telegram.js"></script>
+    <script src="js/books.js"></script>
+    <script src="js/app.js"></script>
 </body>
-</html>
+</html></html>
