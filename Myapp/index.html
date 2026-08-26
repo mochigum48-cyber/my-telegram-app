@@ -2,284 +2,513 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>RO_Bookshelf</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #f4efe6;
-      --card: #ffffff;
-      --text: #222222;
-      --muted: #6b6b6b;
-      --primary: #7a4f2a;
-      --primary-dark: #5f3d20;
-      --line: #e7dfd3;
-      --nav: #fffaf2;
+      --bg: #0f172a;
+      --surface: #111827;
+      --surface-2: #1f2937;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #2563eb;
+      --border: rgba(255,255,255,0.08);
+      --card-radius: 20px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.24);
+      --safe-bottom: env(safe-area-inset-bottom, 16px);
     }
-    * { box-sizing: border-box; }
-    body {
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
       background: var(--bg);
       color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
     }
-    .app {
-      max-width: 430px;
+
+    body {
       min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(56,189,248,0.12), transparent 35%),
+        radial-gradient(circle at bottom, rgba(37,99,235,0.10), transparent 35%),
+        var(--bg);
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
       margin: 0 auto;
-      background: var(--bg);
-      padding-bottom: 78px;
+      padding: 16px 16px calc(24px + var(--safe-bottom));
     }
-    .header {
-      padding: 18px 18px 10px;
-      text-align: center;
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(37,99,235,0.18), rgba(56,189,248,0.10));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
     }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -20px -30px auto;
+      width: 140px;
+      height: 140px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(56,189,248,0.28), transparent 70%);
+      pointer-events: none;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
     .logo {
-      width: 92px;
-      height: 92px;
-      object-fit: cover;
+      width: 58px;
+      height: 58px;
       border-radius: 18px;
-      display: block;
-      margin: 0 auto 12px;
-      background: #ddd;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 24px rgba(37,99,235,0.30);
+      flex: 0 0 auto;
     }
-    h1 {
-      margin: 0;
+
+    .logo span {
       font-size: 28px;
+      line-height: 1;
+    }
+
+    .title-wrap h1 {
+      margin: 0;
+      font-size: 22px;
       line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.02em;
     }
-    .subtitle {
+
+    .title-wrap p {
       margin: 6px 0 0;
-      color: var(--primary);
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .desc {
-      margin: 8px 0 0;
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.5;
     }
-    .search-wrap {
-      padding: 14px 18px 6px;
-    }
-    .search {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-size: 15px;
-      outline: none;
-      background: #fff;
-    }
-    .section {
-      padding: 10px 18px 0;
-    }
-    .section-title {
-      margin: 10px 0 12px;
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .chip {
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 999px;
-      padding: 9px 14px;
-      font-size: 14px;
-      color: var(--text);
-    }
-    .chip.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-    .book-list {
-      padding: 0 18px 12px;
+
+    .stats {
       display: grid;
-      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
     }
-    .book-card {
-      background: var(--card);
-      border: 1px solid var(--line);
+
+    .stat {
+      background: rgba(17,24,39,0.65);
+      border: 1px solid var(--border);
       border-radius: 18px;
       padding: 12px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-    }
-    .cover-box {
-      width: 74px;
-      height: 98px;
-      border-radius: 12px;
-      background: #efe6d7;
-      overflow: hidden;
-      flex: 0 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #8b6a4b;
-      font-size: 13px;
       text-align: center;
-      padding: 8px;
     }
-    .cover-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+
+    .stat strong {
       display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
     }
-    .book-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .book-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin: 0 0 4px;
-    }
-    .author {
-      margin: 0 0 6px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .meta {
-      margin: 0 0 10px;
+
+    .stat span {
       color: var(--muted);
       font-size: 12px;
     }
-    .download-btn {
-      border: none;
-      background: var(--primary);
-      color: #fff;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 14px;
+
+    .section {
+      margin-top: 18px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      margin: 0;
+      font-size: 16px;
       font-weight: 700;
+    }
+
+    .section-header button {
+      background: transparent;
+      border: 0;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(31,41,55,0.96), rgba(17,24,39,0.96));
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-cover {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(56,189,248,0.20), rgba(37,99,235,0.12));
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 12px;
+      display: grid;
+      place-items: center;
+      color: rgba(255,255,255,0.82);
+      font-size: 42px;
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .card .author {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      font-size: 11px;
+      color: var(--text);
+      background: rgba(56,189,248,0.12);
+      border: 1px solid rgba(56,189,248,0.18);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    .actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-weight: 700;
+      font-size: 13px;
       cursor: pointer;
     }
-    .download-btn:active {
-      background: var(--primary-dark);
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 10px 24px rgba(37,99,235,0.28);
     }
-    .bottom-nav {
-      position: fixed;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 430px;
-      background: var(--nav);
-      border-top: 1px solid var(--line);
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .search-box {
       display: flex;
-      justify-content: space-around;
-      padding: 10px 8px 14px;
+      gap: 10px;
+      background: rgba(17,24,39,0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: var(--shadow);
     }
-    .nav-item {
-      font-size: 13px;
+
+    .search-box input {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .search-box input::placeholder {
       color: var(--muted);
-      text-align: center;
     }
-    .nav-item.active {
-      color: var(--primary);
-      font-weight: 700;
+
+    .search-box button {
+      min-width: 92px;
+    }
+
+    .empty {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.10);
+    }
+
+    .footer-space {
+      height: 18px;
+    }
+
+    @media (max-width: 420px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .title-wrap h1 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="header">
-      <img class="logo" src="logo.webp" alt="RO Bookshelf logo">
-      <h1>RO_Bookshelf</h1>
-      <p class="subtitle">Explore the World Through Books</p>
-      <p class="desc">စာအုပ်များ ရှာဖွေပါ</p>
-      <p class="desc">သင့်စိတ်ကြိုက် စာအုပ်များကို ရှာပြီး Download လုပ်ပါ။</p>
-    </div>
+    <div class="hero">
+      <div class="brand-row">
+        <div class="logo"><span>📚</span></div>
+        <div class="title-wrap">
+          <h1>RO_Bookshelf</h1>
+          <p>မင်းကြိုက်တဲ့စာအုပ်တွေကို လွယ်လွယ်ကူကူ ရှာဖွေပြီး ဖတ်နိုင်အောင်</p>
+        </div>
+      </div>
 
-    <div class="search-wrap">
-      <input class="search" type="text" placeholder="စာအုပ်၊ Author ရှာရန်..." />
-    </div>
-
-    <div class="section">
-      <div class="section-title">အမျိုးအစားများ</div>
-      <div class="chips">
-        <div class="chip active">အားလုံး</div>
-        <div class="chip">Novels</div>
-        <div class="chip">Education</div>
-        <div class="chip">Business</div>
+      <div class="stats">
+        <div class="stat">
+          <strong id="bookCount">0</strong>
+          <span>Available Books</span>
+        </div>
+        <div class="stat">
+          <strong id="dailyCount">1</strong>
+          <span>Daily Book</span>
+        </div>
+        <div class="stat">
+          <strong id="langStatus">Auto</strong>
+          <span>Theme Sync</span>
+        </div>
       </div>
     </div>
 
     <div class="section">
-      <div class="section-title">နောက်ဆုံးတင်ထားသောစာအုပ်များ</div>
+      <div class="section-header">
+        <h2>🔎 Search Books</h2>
+      </div>
+
+      <div class="search-box">
+        <input id="searchInput" type="text" placeholder="စာအုပ်နာမည် / စာရေးသူနာမည်" />
+        <button class="btn btn-primary" onclick="searchLocal()">Search</button>
+      </div>
     </div>
 
-    <div class="book-list" id="bookList">
-      <!-- Books will be loaded from Bot -->
+    <div class="section">
+      <div class="section-header">
+        <h2>📖 Featured Books</h2>
+        <button onclick="resetFilter()">Reset</button>
+      </div>
+
+      <div class="grid" id="bookGrid">
+        <div class="card" data-id="book_1" data-title="မြန်မာစာအုပ် ၁" data-author="Author One">
+          <div class="book-cover">📘</div>
+          <h3>မြန်မာစာအုပ် ၁</h3>
+          <div class="author">Author One</div>
+          <div class="meta-row">
+            <span class="pill">PDF</span>
+            <span class="pill">Popular</span>
+            <span class="pill">New</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="previewBook('book_1')">Preview</button>
+            <button class="btn btn-primary" onclick="downloadBook('book_1')">Download</button>
+          </div>
+        </div>
+
+        <div class="card" data-id="book_2" data-title="မြန်မာစာအုပ် ၂" data-author="Author Two">
+          <div class="book-cover">📗</div>
+          <h3>မြန်မာစာအုပ် ၂</h3>
+          <div class="author">Author Two</div>
+          <div class="meta-row">
+            <span class="pill">PDF</span>
+            <span class="pill">Trending</span>
+            <span class="pill">Hot</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="previewBook('book_2')">Preview</button>
+            <button class="btn btn-primary" onclick="downloadBook('book_2')">Download</button>
+          </div>
+        </div>
+
+        <div class="card" data-id="book_3" data-title="မြန်မာစာအုပ် ၃" data-author="Author Three">
+          <div class="book-cover">📙</div>
+          <h3>မြန်မာစာအုပ် ၃</h3>
+          <div class="author">Author Three</div>
+          <div class="meta-row">
+            <span class="pill">PDF</span>
+            <span class="pill">Classic</span>
+            <span class="pill">Reader</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="previewBook('book_3')">Preview</button>
+            <button class="btn btn-primary" onclick="downloadBook('book_3')">Download</button>
+          </div>
+        </div>
+
+        <div class="card" data-id="book_4" data-title="မြန်မာစာအုပ် ၄" data-author="Author Four">
+          <div class="book-cover">📕</div>
+          <h3>မြန်မာစာအုပ် ၄</h3>
+          <div class="author">Author Four</div>
+          <div class="meta-row">
+            <span class="pill">PDF</span>
+            <span class="pill">Fresh</span>
+            <span class="pill">Story</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="previewBook('book_4')">Preview</button>
+            <button class="btn btn-primary" onclick="downloadBook('book_4')">Download</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty" id="emptyState" style="display:none;">
+        မတွေ့သေးပါဘူး။ Search ကို ပြန်ရှာကြည့်ပါ။
+      </div>
     </div>
 
-    <div class="bottom-nav">
-      <div class="nav-item active">⌂<br>Home</div>
-      <div class="nav-item">▦<br>Categories</div>
-      <div class="nav-item">♡<br>Saved</div>
-    </div>
+    <div class="footer-space"></div>
   </div>
 
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    if (tg) {
-      tg.ready();
-      tg.expand();
+
+    const themeVars = {
+      bg_color: '--bg',
+      secondary_bg_color: '--surface',
+      text_color: '--text',
+      hint_color: '--muted',
+      link_color: '--accent',
+      button_color: '--accent-2',
+      button_text_color: '--text'
+    };
+
+    function applyTheme() {
+      if (!tg) return;
+      const root = document.documentElement;
+      const theme = tg.themeParams || {};
+      Object.entries(themeVars).forEach(([key, cssVar]) => {
+        if (theme[key]) root.style.setProperty(cssVar, theme[key]);
+      });
+      if (tg.colorScheme === 'light') {
+        root.style.setProperty('--bg', theme.bg_color || '#f8fafc');
+        root.style.setProperty('--surface', theme.secondary_bg_color || '#ffffff');
+        root.style.setProperty('--surface-2', theme.secondary_bg_color || '#e2e8f0');
+        root.style.setProperty('--text', theme.text_color || '#0f172a');
+        root.style.setProperty('--muted', theme.hint_color || '#475569');
+        root.style.setProperty('--border', 'rgba(0,0,0,0.08)');
+      }
+      document.getElementById('langStatus').textContent = tg.colorScheme || 'Auto';
     }
 
-    const BOT_API_URL = 'https://enn-storage-bot.onrender.com/api/books';
-
-    async function loadBooks() {
-      try {
-        const response = await fetch(BOT_API_URL);
-        const books = await response.json();
-
-        const bookList = document.getElementById('bookList');
-        bookList.innerHTML = '';
-
-        books.forEach(book => {
-          const card = document.createElement('div');
-          card.className = 'book-card';
-          card.innerHTML = `
-            <div class="cover-box">
-              <img src="${book.cover || 'book-cover.jpg'}" alt="Book cover">
-            </div>
-            <div class="book-info">
-              <p class="book-title">${book.title}</p>
-              <p class="author">${book.author}</p>
-              <p class="meta">PDF • ${book.size} MB</p>
-              <button class="download-btn" onclick="downloadBook('${book.id}')">Download</button>
-            </div>
-          `;
-          bookList.appendChild(card);
-        });
-      } catch (error) {
-        console.error('Failed to load books:', error);
-        document.getElementById('bookList').innerHTML = '<p style="text-align:center;padding:20px;">❌ စာအုပ်များ ရယူရန် မအောင်မြင်ပါ။</p>';
-      }
+    function initTelegram() {
+      if (!tg) return;
+      tg.ready();
+      tg.expand();
+      applyTheme();
+      tg.onEvent('themeChanged', applyTheme);
     }
 
     function downloadBook(bookId) {
-      if (!tg) {
-        alert('Please open this app from Telegram!');
-        return;
+      const payload = JSON.stringify({
+        action: "download",
+        bookId: bookId
+      });
+
+      if (tg) {
+        tg.sendData(payload);
+      } else {
+        alert(payload);
       }
-      tg.sendData(JSON.stringify({
-        action: 'download',
-        bookId: `book_${bookId}`
-      }));
     }
 
-    loadBooks();
+    function previewBook(bookId) {
+      const card = document.querySelector(`[data-id="${bookId}"]`);
+      if (!card) return;
+      const title = card.getAttribute('data-title') || 'Book';
+      const author = card.getAttribute('data-author') || '';
+      alert(`${title}
+${author}`);
+    }
+
+    function searchLocal() {
+      const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const cards = [...document.querySelectorAll('.card')];
+      let visible = 0;
+
+      cards.forEach(card => {
+        const title = (card.getAttribute('data-title') || '').toLowerCase();
+        const author = (card.getAttribute('data-author') || '').toLowerCase();
+        const match = !q || title.includes(q) || author.includes(q);
+        card.style.display = match ? 'flex' : 'none';
+        if (match) visible++;
+      });
+
+      document.getElementById('emptyState').style.display = visible ? 'none' : 'block';
+    }
+
+    function resetFilter() {
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.card').forEach(card => card.style.display = 'flex');
+      document.getElementById('emptyState').style.display = 'none';
+    }
+
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') searchLocal();
+    });
+
+    document.getElementById('bookCount').textContent = document.querySelectorAll('.card').length;
+    initTelegram();
   </script>
 </body>
 </html>
