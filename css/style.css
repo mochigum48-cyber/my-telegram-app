@@ -537,3 +537,317 @@ body {
         font-size: 16px;
     }
 }
+
+
+/* ===== Profile Page ===== */
+.profile-container {
+    padding: 0 0 20px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0 20px;
+    border-bottom: 1px solid var(--border-gold);
+}
+
+.profile-avatar {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--bg-card-elevated);
+    border: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
+
+.profile-avatar.glow-seed {
+    box-shadow: 0 0 30px var(--glow-blue);
+}
+.profile-avatar.glow-sprout {
+    box-shadow: 0 0 40px rgba(125, 179, 155, 0.2);
+}
+.profile-avatar.glow-bloom {
+    box-shadow: 0 0 50px rgba(240, 192, 87, 0.2);
+}
+.profile-avatar.glow-constellation {
+    box-shadow: 0 0 60px rgba(155, 134, 216, 0.25);
+}
+
+.avatar-icon {
+    font-size: 28px;
+    color: var(--gold);
+}
+
+.avatar-status {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 18px;
+    background: var(--bg-deep);
+    border-radius: 50%;
+    padding: 2px;
+    line-height: 1;
+}
+
+.profile-name h2 {
+    font-size: 18px;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.profile-username {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: block;
+}
+
+.profile-stage {
+    font-size: 12px;
+    color: var(--gold);
+    display: block;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
+
+/* ===== Stats ===== */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 16px 0;
+}
+
+.stat-item {
+    text-align: center;
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: 12px 4px;
+    border: 1px solid var(--border-blue);
+}
+
+.stat-number {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== Constellation Progress ===== */
+.constellation-progress {
+    background: var(--bg-surface);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin: 8px 0 16px;
+    border: 1px solid var(--border-gold);
+}
+
+.constellation-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.constellation-label span:last-child {
+    color: var(--constellation);
+    font-weight: 600;
+}
+
+/* ===== Profile Sections ===== */
+.profile-section {
+    padding: 16px 0;
+}
+
+.section-title {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+/* ===== Download List ===== */
+.download-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.download-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-blue);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.download-item:active {
+    transform: scale(0.98);
+}
+
+.download-cover {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.download-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.download-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.download-author {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.download-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ===== Favorite Grid ===== */
+.favorite-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.favorite-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid var(--border-gold);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.favorite-card:active {
+    transform: scale(0.96);
+}
+
+.fav-cover {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.fav-title {
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fav-author {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--text-muted);
+}
+
+.empty-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 6px;
+    opacity: 0.6;
+}
+
+.empty-state p {
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ===== Profile Footer ===== */
+.profile-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0 4px;
+    border-top: 1px solid var(--border-blue);
+    margin-top: 8px;
+}
+
+.footer-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.footer-version {
+    font-size: 11px;
+    color: var(--text-muted);
+    opacity: 0.6;
+}
+
+/* ===== Toast ===== */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-card-elevated);
+    color: var(--text-primary);
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    border: 1px solid var(--border-gold);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 300;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-success {
+    border-color: var(--bloom);
+}
+
+.toast-error {
+    border-color: #D87979;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 400px) {
+    .profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .favorite-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
