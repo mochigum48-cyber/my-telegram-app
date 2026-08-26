@@ -13,7 +13,7 @@
 
   <title>RO Bookshelf</title>
 
-  <!-- Telegram Mini App Support -->
+  <!-- Telegram Mini App script -->
   <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
 
   <style>
@@ -61,8 +61,8 @@
       background:
         radial-gradient(
           circle at top left,
-          rgba(56, 189, 248, .13),
-          transparent 32%
+          rgba(56, 189, 248, .14),
+          transparent 34%
         ),
         radial-gradient(
           circle at bottom right,
@@ -74,7 +74,7 @@
 
     body.light {
       --card-bg: #ffffff;
-      --input-bg: rgba(255, 255, 255, .92);
+      --input-bg: rgba(255, 255, 255, .94);
       --border: rgba(15, 23, 42, .1);
       --shadow: 0 10px 28px rgba(15, 23, 42, .1);
     }
@@ -210,7 +210,7 @@
     }
 
     .section {
-      margin-top: 20px;
+      margin-top: 21px;
     }
 
     .section-header {
@@ -265,11 +265,11 @@
     }
 
     .btn {
-      min-height: 42px;
-      padding: 10px 13px;
+      min-height: 40px;
+      padding: 9px 12px;
       border: 0;
       border-radius: 13px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       transition: transform .16s ease, opacity .16s ease;
     }
@@ -292,15 +292,6 @@
       color: var(--text);
       border: 1px solid var(--border);
       background: rgba(255, 255, 255, .06);
-    }
-
-    .btn-success {
-      color: #fff;
-      background: linear-gradient(
-        135deg,
-        #22c55e,
-        #15803d
-      );
     }
 
     .category-scroll {
@@ -359,6 +350,7 @@
     }
 
     .mini-cover img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -396,40 +388,73 @@
       background: var(--accent);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 11px;
-    }
+    /*
+      Horizontal Book List
+    */
 
-    .card {
+    .horizontal-books {
       display: flex;
-      min-width: 0;
-      min-height: 315px;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 11px;
-      border: 1px solid var(--border);
-      border-radius: 21px;
-      background: var(--card-bg);
-      box-shadow: var(--shadow);
+      gap: 13px;
+      width: calc(100% + 14px);
+      padding: 2px 14px 10px 2px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
     }
 
-    .book-cover {
+    .horizontal-books::-webkit-scrollbar {
+      display: none;
+    }
+
+    .book-card {
       position: relative;
-      aspect-ratio: 3 / 4;
-      margin-bottom: 11px;
+      display: flex;
+      flex: 0 0 285px;
+      min-height: 148px;
+      gap: 13px;
+      padding: 12px;
       overflow: hidden;
-      border-radius: 15px;
+      scroll-snap-align: start;
+      border: 1px solid var(--border);
+      border-radius: 20px;
       background:
         linear-gradient(
           135deg,
-          rgba(56, 189, 248, .2),
-          rgba(37, 99, 235, .18)
+          rgba(37, 99, 235, .23),
+          var(--card-bg)
+        );
+      box-shadow: var(--shadow);
+    }
+
+    .book-card::after {
+      content: "";
+      position: absolute;
+      right: -30px;
+      bottom: -38px;
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: rgba(56, 189, 248, .13);
+      pointer-events: none;
+    }
+
+    .book-cover-small {
+      position: relative;
+      z-index: 1;
+      width: 88px;
+      height: 119px;
+      flex: 0 0 88px;
+      overflow: hidden;
+      border-radius: 14px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(56, 189, 248, .28),
+          rgba(37, 99, 235, .28)
         );
     }
 
-    .book-cover img {
+    .book-cover-small img {
       display: block;
       width: 100%;
       height: 100%;
@@ -441,39 +466,22 @@
       width: 100%;
       height: 100%;
       place-items: center;
-      font-size: 45px;
+      font-size: 40px;
     }
 
-    .favorite-button {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      display: grid;
-      width: 31px;
-      height: 31px;
-      place-items: center;
-      border: 0;
-      border-radius: 50%;
-      color: #fff;
-      background: rgba(0, 0, 0, .45);
-      font-size: 17px;
+    .book-info {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-width: 0;
+      flex: 1;
+      flex-direction: column;
+      padding-right: 3px;
     }
 
-    .badge {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      padding: 5px 8px;
-      border-radius: 999px;
-      color: #fff;
-      background: rgba(37, 99, 235, .88);
-      font-size: 9px;
-      font-weight: 800;
-    }
-
-    .card h3 {
+    .book-info h3 {
       display: -webkit-box;
-      margin-bottom: 4px;
+      margin: 3px 0 5px;
       overflow: hidden;
       font-size: 14px;
       line-height: 1.35;
@@ -481,24 +489,24 @@
       -webkit-line-clamp: 2;
     }
 
-    .author {
-      margin-bottom: 8px;
+    .book-author {
       overflow: hidden;
+      margin-bottom: 8px;
       color: var(--muted);
       font-size: 11px;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .meta-row {
+    .book-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
-      margin-bottom: 10px;
+      margin-bottom: 9px;
     }
 
-    .pill {
-      padding: 5px 7px;
+    .book-pill {
+      padding: 4px 7px;
       border: 1px solid rgba(56, 189, 248, .2);
       border-radius: 999px;
       color: var(--text);
@@ -506,15 +514,64 @@
       font-size: 9px;
     }
 
-    .actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .book-actions {
+      display: flex;
       gap: 6px;
       margin-top: auto;
     }
 
-    .empty,
-    .loading {
+    .book-actions .btn {
+      min-height: 34px;
+      padding: 7px 9px;
+      font-size: 10px;
+    }
+
+    .save-book {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      z-index: 3;
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(0, 0, 0, .38);
+      font-size: 15px;
+    }
+
+    .book-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      z-index: 2;
+      padding: 4px 7px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(37, 99, 235, .9);
+      font-size: 8px;
+      font-weight: 800;
+    }
+
+    .scroll-hint {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      margin-top: 1px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .scroll-hint span {
+      color: var(--accent);
+      font-size: 16px;
+      animation: moveRight 1.4s infinite ease-in-out;
+    }
+
+    .empty {
       padding: 27px 12px;
       text-align: center;
       border: 1px dashed var(--border);
@@ -586,6 +643,7 @@
     }
 
     .modal-cover img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -702,17 +760,28 @@
       }
     }
 
-    @media (max-width: 420px) {
-      .grid {
-        grid-template-columns: 1fr;
+    @keyframes moveRight {
+      0%,
+      100% {
+        transform: translateX(0);
+        opacity: .55;
       }
 
-      .stats {
-        grid-template-columns: 1fr;
+      50% {
+        transform: translateX(5px);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .book-card {
+        flex-basis: 270px;
       }
 
-      .card {
-        min-height: 0;
+      .book-cover-small {
+        width: 80px;
+        height: 110px;
+        flex-basis: 80px;
       }
     }
   </style>
@@ -720,6 +789,7 @@
 
 <body>
   <main class="app">
+    <!-- Hero -->
     <section class="hero">
       <div class="brand-row">
         <div class="logo">
@@ -728,13 +798,17 @@
 
         <div>
           <h1>RO_Bookshelf</h1>
+
           <p class="subtitle">
             မင်းကြိုက်တဲ့စာအုပ်တွေကို ရှာဖွေဖတ်ရှုပါ
           </p>
         </div>
       </div>
 
-      <p class="user-greeting" id="userGreeting">
+      <p
+        class="user-greeting"
+        id="userGreeting"
+      >
         မင်္ဂလာပါ 👋 စာဖတ်ခြင်းခရီးကို စတင်လိုက်ပါ
       </p>
 
@@ -756,11 +830,15 @@
       </div>
     </section>
 
+    <!-- Search -->
     <section class="section">
       <div class="section-header">
         <div>
           <h2>🔎 စာအုပ်ရှာရန်</h2>
-          <p>စာအုပ်အမည် သို့မဟုတ် စာရေးသူဖြင့်ရှာပါ</p>
+
+          <p>
+            စာအုပ်အမည် သို့မဟုတ် စာရေးသူဖြင့်ရှာပါ
+          </p>
         </div>
 
         <button
@@ -788,12 +866,16 @@
       </div>
     </section>
 
+    <!-- Categories -->
     <section class="section">
       <div class="section-header">
         <h2>🏷️ Categories</h2>
       </div>
 
-      <div class="category-scroll" id="categoryList">
+      <div
+        class="category-scroll"
+        id="categoryList"
+      >
         <button
           class="category active"
           data-category="all"
@@ -844,11 +926,15 @@
       </div>
     </section>
 
+    <!-- Continue Reading -->
     <section class="section">
       <div class="section-header">
         <div>
           <h2>▶️ Continue Reading</h2>
-          <p>သင်နောက်ဆုံးဖတ်ထားသောစာအုပ်</p>
+
+          <p>
+            သင်နောက်ဆုံးဖတ်ထားသောစာအုပ်
+          </p>
         </div>
 
         <button
@@ -866,7 +952,10 @@
 
         <div class="continue-info">
           <h3>မြန်မာစာအုပ် ၁</h3>
-          <p>Chapter 4 · 65% completed</p>
+
+          <p>
+            Chapter 4 · 65% completed
+          </p>
 
           <div class="progress">
             <span></span>
@@ -882,11 +971,15 @@
       </div>
     </section>
 
+    <!-- Featured Books -->
     <section class="section">
       <div class="section-header">
         <div>
-          <h2>📖 Featured Books</h2>
-          <p id="resultText">စာအုပ်များကို ပြသနေပါတယ်</p>
+          <h2>✨ Featured Books</h2>
+
+          <p id="resultText">
+            စာအုပ်များကို ပြသနေပါတယ်
+          </p>
         </div>
 
         <button
@@ -898,9 +991,60 @@
       </div>
 
       <div
-        class="grid"
-        id="bookGrid"
+        class="horizontal-books"
+        id="featuredBooks"
       ></div>
+
+      <div class="scroll-hint">
+        <span>→</span>
+        ဘေးသို့ ဆွဲကြည့်ပါ
+      </div>
+    </section>
+
+    <!-- Popular Books -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>🔥 Popular Books</h2>
+
+          <p>
+            လူကြိုက်များသောစာအုပ်များ
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="horizontal-books"
+        id="popularBooks"
+      ></div>
+
+      <div class="scroll-hint">
+        <span>→</span>
+        ဘေးသို့ ဆွဲကြည့်ပါ
+      </div>
+    </section>
+
+    <!-- Recently Added -->
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <h2>🆕 Recently Added</h2>
+
+          <p>
+            အသစ်ထည့်ထားသောစာအုပ်များ
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="horizontal-books"
+        id="recentBooks"
+      ></div>
+
+      <div class="scroll-hint">
+        <span>→</span>
+        ဘေးသို့ ဆွဲကြည့်ပါ
+      </div>
 
       <div
         class="empty"
@@ -912,6 +1056,7 @@
     </section>
   </main>
 
+  <!-- Bottom Navigation -->
   <nav class="bottom-nav">
     <button
       class="nav-item active"
@@ -946,6 +1091,7 @@
     </button>
   </nav>
 
+  <!-- Book Detail Modal -->
   <div
     class="modal"
     id="bookModal"
@@ -967,6 +1113,7 @@
     </div>
   </div>
 
+  <!-- Browser Toast -->
   <div
     class="toast"
     id="toast"
@@ -974,7 +1121,7 @@
 
   <script>
     /*
-      Telegram support is optional.
+      Telegram Mini App support.
       Browser မှာဖွင့်ရင် tg = null ဖြစ်နိုင်ပါတယ်။
     */
     const tg = window.Telegram?.WebApp || null;
@@ -992,11 +1139,14 @@
         format: "PDF",
         size: "2.4 MB",
         pages: 120,
-        cover: "https://placehold.co/360x480/2563eb/ffffff?text=Book+1",
+        rating: "4.8",
+        cover:
+          "https://placehold.co/360x480/2563eb/ffffff?text=Book+1",
         description:
           "ဖတ်ရှုရန် စိတ်ဝင်စားဖွယ်ကောင်းသော မြန်မာစာအုပ်တစ်အုပ်။",
         featured: true,
-        rating: "4.8"
+        popular: true,
+        recent: true
       },
       {
         id: "book_2",
@@ -1006,11 +1156,14 @@
         format: "PDF",
         size: "3.1 MB",
         pages: 210,
-        cover: "https://placehold.co/360x480/0ea5e9/ffffff?text=Book+2",
+        rating: "4.7",
+        cover:
+          "https://placehold.co/360x480/0ea5e9/ffffff?text=Book+2",
         description:
           "ပညာရေးနှင့် ဗဟုသုတဆိုင်ရာ စာအုပ်တစ်အုပ်။",
         featured: true,
-        rating: "4.7"
+        popular: true,
+        recent: false
       },
       {
         id: "book_3",
@@ -1020,11 +1173,14 @@
         format: "PDF",
         size: "1.8 MB",
         pages: 98,
-        cover: "https://placehold.co/360x480/7c3aed/ffffff?text=Book+3",
+        rating: "4.6",
+        cover:
+          "https://placehold.co/360x480/7c3aed/ffffff?text=Book+3",
         description:
           "မြန်မာ့သမိုင်းကြောင်းကို လေ့လာနိုင်သော စာအုပ်။",
-        featured: false,
-        rating: "4.6"
+        featured: true,
+        popular: false,
+        recent: true
       },
       {
         id: "book_4",
@@ -1034,11 +1190,14 @@
         format: "PDF",
         size: "4.2 MB",
         pages: 180,
-        cover: "https://placehold.co/360x480/ea580c/ffffff?text=Book+4",
+        rating: "4.9",
+        cover:
+          "https://placehold.co/360x480/ea580c/ffffff?text=Book+4",
         description:
           "စီးပွားရေးနှင့် ကိုယ်ပိုင်တိုးတက်ရေးအတွက် စာအုပ်။",
         featured: true,
-        rating: "4.9"
+        popular: true,
+        recent: true
       },
       {
         id: "book_5",
@@ -1048,11 +1207,14 @@
         format: "PDF",
         size: "2.1 MB",
         pages: 150,
-        cover: "https://placehold.co/360x480/16a34a/ffffff?text=Book+5",
+        rating: "4.5",
+        cover:
+          "https://placehold.co/360x480/16a34a/ffffff?text=Book+5",
         description:
           "စိတ်ငြိမ်သက်မှုနှင့် အတွေးအမြင်အတွက် ဖတ်ရှုနိုင်သောစာအုပ်။",
         featured: false,
-        rating: "4.5"
+        popular: true,
+        recent: false
       },
       {
         id: "book_6",
@@ -1062,11 +1224,14 @@
         format: "PDF",
         size: "2.9 MB",
         pages: 240,
-        cover: "https://placehold.co/360x480/be123c/ffffff?text=Book+6",
+        rating: "4.4",
+        cover:
+          "https://placehold.co/360x480/be123c/ffffff?text=Book+6",
         description:
           "ဇာတ်လမ်းကောင်းတစ်ပုဒ်ကို ဖတ်ရှုခံစားနိုင်သော စာအုပ်။",
         featured: false,
-        rating: "4.4"
+        popular: false,
+        recent: true
       }
     ];
 
@@ -1115,9 +1280,7 @@
         theme.header_bg_color || theme.bg_color
       );
 
-      tg.setBackgroundColor?.(
-        theme.bg_color
-      );
+      tg.setBackgroundColor?.(theme.bg_color);
     }
 
     function initTelegram() {
@@ -1138,70 +1301,67 @@
       tg.onEvent("themeChanged", applyTelegramTheme);
     }
 
-    function renderBooks(list) {
-      const grid = document.getElementById("bookGrid");
-      const empty = document.getElementById("emptyState");
-      const resultText = document.getElementById("resultText");
+    function getBookCover(book) {
+      return `
+        <img
+          src="${escapeHtml(book.cover)}"
+          alt="${escapeHtml(book.title)}"
+          loading="lazy"
+          onerror="
+            this.outerHTML =
+            '<div class=&quot;fallback-cover&quot;>📘</div>'
+          "
+        />
+      `;
+    }
 
-      if (!list.length) {
-        grid.innerHTML = "";
-        empty.hidden = false;
-        resultText.textContent = "ရလဒ်မတွေ့ပါ";
-        return;
-      }
+    function createBookCard(book) {
+      const saved = savedBooks.includes(book.id);
 
-      empty.hidden = true;
-      resultText.textContent = `${list.length} အုပ် တွေ့ရှိပါတယ်`;
+      return `
+        <article class="book-card">
+          <div class="book-cover-small">
+            ${getBookCover(book)}
 
-      grid.innerHTML = list.map(book => {
-        const saved = savedBooks.includes(book.id);
+            ${
+              book.featured
+                ? '<span class="book-badge">FEATURED</span>'
+                : ""
+            }
+          </div>
 
-        return `
-          <article class="card">
-            <div class="book-cover">
-              <img
-                src="${escapeHtml(book.cover)}"
-                alt="${escapeHtml(book.title)}"
-                loading="lazy"
-                onerror="this.outerHTML='<div class=&quot;fallback-cover&quot;>📘</div>'"
-              />
+          <button
+            class="save-book"
+            onclick="toggleSave('${book.id}')"
+            aria-label="Save book"
+          >
+            ${saved ? "❤️" : "🤍"}
+          </button>
 
-              <button
-                class="favorite-button"
-                onclick="toggleSave('${book.id}')"
-                aria-label="Save book"
-              >
-                ${saved ? "❤️" : "🤍"}
-              </button>
+          <div class="book-info">
+            <h3>
+              ${escapeHtml(book.title)}
+            </h3>
 
-              ${
-                book.featured
-                  ? '<span class="badge">FEATURED</span>'
-                  : ""
-              }
-            </div>
-
-            <h3>${escapeHtml(book.title)}</h3>
-
-            <div class="author">
+            <div class="book-author">
               ${escapeHtml(book.author)}
             </div>
 
-            <div class="meta-row">
-              <span class="pill">
+            <div class="book-meta">
+              <span class="book-pill">
                 ${escapeHtml(book.category)}
               </span>
 
-              <span class="pill">
+              <span class="book-pill">
                 ${escapeHtml(book.format)}
               </span>
 
-              <span class="pill">
-                ${escapeHtml(book.size)}
+              <span class="book-pill">
+                ⭐ ${escapeHtml(book.rating)}
               </span>
             </div>
 
-            <div class="actions">
+            <div class="book-actions">
               <button
                 class="btn btn-secondary"
                 onclick="previewBook('${book.id}')"
@@ -1216,9 +1376,36 @@
                 Download
               </button>
             </div>
-          </article>
-        `;
-      }).join("");
+          </div>
+        </article>
+      `;
+    }
+
+    function renderBookSections(list) {
+      const featured = list.filter(book => book.featured);
+      const popular = list.filter(book => book.popular);
+      const recent = list.filter(book => book.recent);
+
+      document.getElementById("featuredBooks").innerHTML =
+        featured.length
+          ? featured.map(createBookCard).join("")
+          : "";
+
+      document.getElementById("popularBooks").innerHTML =
+        popular.length
+          ? popular.map(createBookCard).join("")
+          : "";
+
+      document.getElementById("recentBooks").innerHTML =
+        recent.length
+          ? recent.map(createBookCard).join("")
+          : "";
+
+      document.getElementById("emptyState").hidden =
+        list.length !== 0;
+
+      document.getElementById("resultText").textContent =
+        `${list.length} အုပ် တွေ့ရှိပါတယ်`;
     }
 
     function getFilteredBooks() {
@@ -1252,7 +1439,7 @@
     }
 
     function applyFilters() {
-      renderBooks(getFilteredBooks());
+      renderBookSections(getFilteredBooks());
     }
 
     function selectCategory(category, button) {
@@ -1283,7 +1470,7 @@
         .querySelector('[data-category="all"]')
         ?.classList.add("active");
 
-      renderBooks(books);
+      renderBookSections(books);
     }
 
     function sortBooks() {
@@ -1292,21 +1479,9 @@
 
       showMessage(
         sortAscending
-          ? "A-Z ဖြင့်စီထားပါတယ်"
+          ? "A-Z ဖြင့် စီထားပါတယ်"
           : "မူလအစီအစဉ်သို့ ပြန်ထားပါတယ်"
       );
-    }
-
-    function coverHtml(book, className) {
-      return `
-        <div class="${className}">
-          <img
-            src="${escapeHtml(book.cover)}"
-            alt="${escapeHtml(book.title)}"
-            onerror="this.outerHTML='<div class=&quot;fallback-cover&quot;>📘</div>'"
-          />
-        </div>
-      `;
     }
 
     function previewBook(bookId) {
@@ -1316,20 +1491,30 @@
 
       document.getElementById("modalBody").innerHTML = `
         <div class="modal-book">
-          ${coverHtml(book, "modal-cover")}
+          <div class="modal-cover">
+            ${getBookCover(book)}
+          </div>
 
           <div class="modal-info">
             <h2>${escapeHtml(book.title)}</h2>
-            <p>${escapeHtml(book.author)}</p>
+
+            <p>
+              ${escapeHtml(book.author)}
+            </p>
+
             <p>
               ${escapeHtml(book.category)}
               · ${escapeHtml(book.format)}
             </p>
+
             <p>
               ${escapeHtml(book.pages)} pages
               · ${escapeHtml(book.size)}
             </p>
-            <p>⭐ ${escapeHtml(book.rating)}</p>
+
+            <p>
+              ⭐ ${escapeHtml(book.rating)}
+            </p>
           </div>
         </div>
 
@@ -1381,12 +1566,13 @@
 
       showMessage(
         `${book.title}
-နောက်ပိုင်း Telegram Bot ချိတ်ပြီး Download လုပ်ပါမယ်`
+
+` +
+        "နောက်ပိုင်း Telegram Bot နှင့်ချိတ်ပြီး Download လုပ်ပါမယ်"
       );
 
       /*
-        နောက်ပိုင်း API ချိတ်တဲ့အခါ ဒီ function ကို
-        fetch() code ဖြင့် ပြန်အစားထိုးနိုင်ပါတယ်။
+        နောက်ပိုင်း API ချိတ်တဲ့အခါ ဒီ function ကို ပြန်ပြင်ပါမယ်။
 
         ဥပမာ:
 
@@ -1453,7 +1639,7 @@
           .focus();
 
         window.scrollTo({
-          top: 200,
+          top: 210,
           behavior: "smooth"
         });
       }
@@ -1514,7 +1700,7 @@
     document.getElementById("featuredCount").textContent =
       books.filter(book => book.featured).length;
 
-    renderBooks(books);
+    renderBookSections(books);
   </script>
 </body>
 </html>
