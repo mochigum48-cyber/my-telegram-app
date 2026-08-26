@@ -8,6 +8,7 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
+    /* ===== ခင်ဗျားရဲ့ ရှိပြီးသား CSS ===== */
     :root {
       --bg: #f4efe6;
       --card: #ffffff;
@@ -230,7 +231,7 @@
       <h1>RO_Bookshelf</h1>
       <p class="subtitle">Explore the World Through Books</p>
       <p class="desc">စာအုပ်များ ရှာဖွေပါ</p>
-      <p class="desc">သင်ကြိုက်တဲ့ စာအုပ်တွေကို ရှာပြီး Download လုပ်ပါ။</p>
+      <p class="desc">သင့်စိတ်ကြိုက် စာအုပ်များကို ရှာပြီး Download လုပ်ပါ။</p>
     </div>
 
     <div class="search-wrap">
@@ -251,30 +252,8 @@
       <div class="section-title">နောက်ဆုံးတင်ထားသောစာအုပ်များ</div>
     </div>
 
-    <div class="book-list">
-      <div class="book-card">
-        <div class="cover-box">
-          <img src="book-cover.jpg" alt="Book cover">
-        </div>
-        <div class="book-info">
-          <p class="book-title">Sample Business Book</p>
-          <p class="author">Author Name</p>
-          <p class="meta">PDF • 4.2 MB</p>
-          <button class="download-btn" onclick="downloadBook('Sample Business Book')">Download</button>
-        </div>
-      </div>
-
-      <div class="book-card">
-        <div class="cover-box">
-          <img src="book-cover.jpg" alt="Book cover">
-        </div>
-        <div class="book-info">
-          <p class="book-title">Sample Novel</p>
-          <p class="author">Author Name</p>
-          <p class="meta">PDF • 6.8 MB</p>
-          <button class="download-btn" onclick="downloadBook('Sample Novel')">Download</button>
-        </div>
-      </div>
+    <div class="book-list" id="bookList">
+      <!-- ===== Books will be loaded from Bot ===== -->
     </div>
 
     <div class="bottom-nav">
@@ -291,13 +270,55 @@
       tg.expand();
     }
 
-    function downloadBook(title) {
-      if (tg) {
-        tg.showAlert(title + " ကို download link ထည့်ရပါမယ်။");
-      } else {
-        alert(title + " ကို download link ထည့်ရပါမယ်။");
+    // ===== Book List from Bot =====
+    async function loadBooks() {
+      try {
+        // Bot ဆီက Book List ကို WebAppData နဲ့ ယူမယ်
+        const response = await fetch('/api/books');  // ဒါက Bot API နဲ့ ချိတ်မယ်
+        const books = await response.json();
+
+        const bookList = document.getElementById('bookList');
+        bookList.innerHTML = '';
+
+        books.forEach(book => {
+          const card = document.createElement('div');
+          card.className = 'book-card';
+
+          card.innerHTML = `
+            <div class="cover-box">
+              <img src="${book.cover || 'book-cover.jpg'}" alt="Book cover">
+            </div>
+            <div class="book-info">
+              <p class="book-title">${book.title}</p>
+              <p class="author">${book.author}</p>
+              <p class="meta">PDF • ${book.size} MB</p>
+              <button class="download-btn" onclick="downloadBook('${book.id}')">Download</button>
+            </div>
+          `;
+
+          bookList.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Failed to load books:', error);
       }
     }
+
+    // ===== Download Book =====
+    function downloadBook(bookId) {
+      if (!tg) {
+        alert('Please open this app from Telegram!');
+        return;
+      }
+
+      // Bot ဆီကို Book ID ပို့မယ်
+      tg.sendData(JSON.stringify({
+        action: 'download',
+        bookId: `book_${bookId}`
+      }));
+    }
+
+    // ===== Load Books on Start =====
+    loadBooks();
   </script>
 </body>
 </html>
