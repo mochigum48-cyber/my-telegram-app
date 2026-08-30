@@ -1,1187 +1,256 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reader's Odyssey</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <style>
-        /* ============================================
-           ROOT VARIABLES - Magical Botany Theme
-           ============================================ */
-        :root {
-            --bg-deep: #0A0C1F;
-            --bg-surface: #101A2D;
-            --bg-card: #122A25;
-            --bg-card-elevated: #183A2C;
-            --text-primary: #F5F1E6;
-            --text-secondary: #B9C2C8;
-            --text-muted: #7F8C96;
-            --gold: #F0C057;
-            --blue: #60A4D9;
-            --bloom: #7DB39B;
-            --constellation: #9B86D8;
-            --border-gold: rgba(240, 192, 87, 0.18);
-            --border-blue: rgba(96, 164, 217, 0.22);
-            --glow-gold: rgba(240, 192, 87, 0.15);
-            --glow-blue: rgba(96, 164, 217, 0.12);
-            --font: 'Inter', -apple-system, sans-serif;
-            --nav-height: 72px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font);
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding-bottom: calc(var(--nav-height) + 20px);
-            background-image:
-                radial-gradient(ellipse at 20% 50%, rgba(96, 164, 217, 0.04) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 20%, rgba(240, 192, 87, 0.03) 0%, transparent 50%);
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 10px;
-        }
-
-        /* ============================================
-           BOTTOM NAVIGATION
-           ============================================ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-height);
-            background: rgba(8, 10, 24, 0.92);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 6px 0 10px;
-            border-top: 1px solid var(--border-gold);
-            z-index: 100;
-        }
-
-        .nav-item {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            font-size: 10px;
-            cursor: pointer;
-            padding: 4px 12px;
-            transition: all 0.3s;
-            font-family: var(--font);
-            position: relative;
-        }
-
-        .nav-icon {
-            font-size: 22px;
-            transition: all 0.3s;
-        }
-
-        .nav-item.active .nav-icon {
-            color: var(--gold);
-            text-shadow: 0 0 20px var(--glow-gold);
-        }
-
-        .nav-item.active .nav-label {
-            color: var(--gold);
-        }
-
-        .nav-label {
-            font-size: 10px;
-            letter-spacing: 0.3px;
-        }
-
-        /* ============================================
-           PAGES
-           ============================================ */
-        .page {
-            display: none;
-            padding: 16px 16px 24px;
-            max-width: 480px;
-            margin: 0 auto;
-            animation: fadeUp 0.4s ease;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ============================================
-           HEADER
-           ============================================ */
-        .header {
-            padding: 12px 0 8px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            font-size: 28px;
-            color: var(--gold);
-            text-shadow: 0 0 30px var(--glow-gold);
-            animation: pulseGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%,
-            100% {
-                text-shadow: 0 0 20px var(--glow-gold);
-            }
-            50% {
-                text-shadow: 0 0 40px var(--glow-gold), 0 0 60px rgba(240, 192, 87, 0.08);
-            }
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: 0.5px;
-        }
-
-        .header-subtitle {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 4px;
-            padding-left: 4px;
-            letter-spacing: 0.3px;
-        }
-
-        .greeting {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin: 8px 0 4px;
-        }
-
-        /* ============================================
-           SEARCH
-           ============================================ */
-        .search-box {
-            display: flex;
-            align-items: center;
-            background: var(--bg-surface);
-            border-radius: 14px;
-            padding: 10px 16px;
-            margin: 12px 0 14px;
-            border: 1px solid var(--border-blue);
-            transition: all 0.3s;
-        }
-
-        .search-box:focus-within {
-            border-color: var(--gold);
-            box-shadow: 0 0 25px var(--glow-gold);
-        }
-
-        .search-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-primary);
-            font-size: 15px;
-            width: 100%;
-            font-family: var(--font);
-        }
-
-        .search-box input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .search-icon {
-            color: var(--text-muted);
-            font-size: 16px;
-            margin-right: 10px;
-        }
-
-        /* ============================================
-           CATEGORIES
-           ============================================ */
-        .category-scroll {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 4px 0 16px;
-            scrollbar-width: none;
-        }
-
-        .category-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-chip {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-blue);
-            color: var(--text-secondary);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: var(--font);
-        }
-
-        .category-chip.active {
-            background: var(--gold);
-            color: var(--bg-deep);
-            border-color: var(--gold);
-            font-weight: 600;
-            box-shadow: 0 0 25px var(--glow-gold);
-        }
-
-        /* ============================================
-           BOOK GRID
-           ============================================ */
-        .book-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            padding-bottom: 20px;
-        }
-
-        /* ============================================
-           BOOK CARD
-           ============================================ */
-        .book-card {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            border: 1px solid var(--border-gold);
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .book-card:active {
-            transform: scale(0.98);
-        }
-
-        .book-cover {
-            width: 64px;
-            height: 80px;
-            border-radius: 10px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-blue);
-            overflow: hidden;
-        }
-
-        .book-cover.glow-seed {
-            box-shadow: 0 0 30px var(--glow-blue);
-        }
-        .book-cover.glow-sprout {
-            box-shadow: 0 0 40px rgba(125, 179, 155, 0.2);
-        }
-        .book-cover.glow-bloom {
-            box-shadow: 0 0 50px rgba(240, 192, 87, 0.2);
-        }
-        .book-cover.glow-constellation {
-            box-shadow: 0 0 60px rgba(155, 134, 216, 0.25);
-        }
-
-        .book-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .book-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-            line-height: 1.3;
-        }
-
-        .book-author {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .book-meta {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .book-progress {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .progress-bar {
-            height: 4px;
-            flex: 1;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.8s ease;
-            background: var(--gold);
-            box-shadow: 0 0 15px var(--glow-gold);
-        }
-
-        .progress-fill.sprout {
-            background: var(--bloom);
-            box-shadow: 0 0 15px rgba(125, 179, 155, 0.2);
-        }
-        .progress-fill.bud {
-            background: var(--blue);
-            box-shadow: 0 0 15px var(--glow-blue);
-        }
-        .progress-fill.bloom {
-            background: var(--gold);
-            box-shadow: 0 0 20px var(--glow-gold);
-        }
-        .progress-fill.constellation {
-            background: var(--constellation);
-            box-shadow: 0 0 25px rgba(155, 134, 216, 0.3);
-        }
-
-        .progress-label {
-            font-size: 11px;
-            font-weight: 500;
-            min-width: 32px;
-            text-align: right;
-        }
-        .progress-label.gold {
-            color: var(--gold);
-        }
-        .progress-label.blue {
-            color: var(--blue);
-        }
-        .progress-label.bloom {
-            color: var(--bloom);
-        }
-        .progress-label.constellation {
-            color: var(--constellation);
-        }
-
-        .book-status {
-            font-size: 18px;
-            flex-shrink: 0;
-            transition: all 0.5s;
-        }
-
-        /* ============================================
-           BOOK DETAIL MODAL
-           ============================================ */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(10, 12, 31, 0.85);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-overlay.hidden {
-            display: none;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-content {
-            background: var(--bg-card-elevated);
-            border-radius: 24px;
-            padding: 32px 28px;
-            max-width: 380px;
-            width: 100%;
-            border: 1px solid var(--border-gold);
-            box-shadow: 0 0 60px rgba(240, 192, 87, 0.05);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-content .book-cover-big {
-            font-size: 56px;
-            text-align: center;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .modal-content h2 {
-            font-size: 20px;
-            color: var(--text-primary);
-            text-align: center;
-            margin-bottom: 2px;
-        }
-
-        .modal-content .modal-author {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .modal-content .modal-meta {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-        }
-
-        .modal-content .modal-desc {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 16px;
-            text-align: center;
-        }
-
-        .modal-content .modal-progress {
-            margin-bottom: 16px;
-        }
-
-        .modal-content .modal-progress .progress-bar {
-            height: 6px;
-        }
-
-        .btn-gold {
-            background: var(--gold);
-            color: var(--bg-deep);
-            border: none;
-            padding: 12px 28px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            font-family: var(--font);
-            box-shadow: 0 0 30px var(--glow-gold);
-        }
-
-        .btn-gold:active {
-            transform: scale(0.96);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-muted);
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-            font-family: var(--font);
-        }
-
-        /* ============================================
-           PLACEHOLDER
-           ============================================ */
-        .page-placeholder {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .placeholder-icon {
-            font-size: 48px;
-            color: var(--gold);
-            opacity: 0.5;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .page-placeholder h2 {
-            color: var(--text-secondary);
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        .page-placeholder p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        /* ============================================
-           LOADING SPINNER
-           ============================================ */
-        .loading-spinner {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--bg-surface);
-            border-top: 3px solid var(--gold);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ============================================
-           TOAST
-           ============================================ */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-card-elevated);
-            color: var(--text-primary);
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            border: 1px solid var(--border-gold);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 300;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
-        @media (min-width: 480px) {
-            .page {
-                padding: 20px 24px 30px;
-            }
-            .book-cover {
-                width: 72px;
-                height: 90px;
-            }
-            .book-title {
-                font-size: 16px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .modal-content {
-                padding: 24px 16px;
-            }
-            .book-cover {
-                width: 52px;
-                height: 68px;
-                font-size: 24px;
-            }
-            .book-title {
-                font-size: 13px;
-            }
-            .logo-text {
-                font-size: 17px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
+  <meta name="theme-color" content="#0A0C1F">
+  <title>MM Digital Library</title>
+
+  <link rel="stylesheet" href="css/home.css">
+
+  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
 </head>
+
 <body>
+  <main class="app">
 
-    <!-- ==========================================
-    BOTTOM NAVIGATION
-    ========================================== -->
-    <nav class="bottom-nav">
-        <button class="nav-item active" data-page="home">
-            <span class="nav-icon">✦</span>
-            <span class="nav-label">Home</span>
-        </button>
-        <button class="nav-item" data-page="explore">
-            <span class="nav-icon">✧</span>
-            <span class="nav-label">Explore</span>
-        </button>
-        <button class="nav-item" data-page="library">
-            <span class="nav-icon">◈</span>
-            <span class="nav-label">Library</span>
-        </button>
-        <button class="nav-item" data-page="profile">
-            <span class="nav-icon">☽</span>
-            <span class="nav-label">Profile</span>
-        </button>
-    </nav>
-
-    <!-- ==========================================
-    PAGES
-    ========================================== -->
-    <main id="app">
-
-        <!-- HOME -->
-        <section id="page-home" class="page active">
-            <div class="header">
-                <div class="logo">
-                    <span class="logo-icon">✦</span>
-                    <span class="logo-text">Reader's Odyssey</span>
-                </div>
-                <div class="greeting" id="greetingText">Good morning! 🌅</div>
-                <div class="header-subtitle">Explore the world through books</div>
-            </div>
-
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="Search books, authors..." />
-            </div>
-
-            <div class="category-scroll">
-                <button class="category-chip active" data-cat="all">All</button>
-                <button class="category-chip" data-cat="fantasy">Fantasy</button>
-                <button class="category-chip" data-cat="scifi">Sci-Fi</button>
-                <button class="category-chip" data-cat="mystery">Mystery</button>
-                <button class="category-chip" data-cat="romance">Romance</button>
-                <button class="category-chip" data-cat="adventure">Adventure</button>
-                <button class="category-chip" data-cat="classic">Classic</button>
-            </div>
-
-            <div id="bookGrid">
-                <div class="loading-spinner">
-                    <div class="spinner"></div>
-                    <p style="margin-top: 10px;">Loading your library...</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- EXPLORE -->
-        <section id="page-explore" class="page">
-            <div class="page-placeholder">
-                <span class="placeholder-icon">✧</span>
-                <h2>Explore</h2>
-                <p>Discover new books and authors</p>
-            </div>
-        </section>
-
-        <!-- LIBRARY -->
-        <section id="page-library" class="page">
-            <div class="page-placeholder">
-                <span class="placeholder-icon">◈</span>
-                <h2>My Library</h2>
-                <p>Your downloaded books will appear here</p>
-            </div>
-        </section>
-
-        <!-- PROFILE -->
-        <section id="page-profile" class="page">
-            <div class="page-placeholder">
-                <span class="placeholder-icon">☽</span>
-                <h2>Profile</h2>
-                <p>Your reading journey</p>
-            </div>
-        </section>
-    </main>
-
-    <!-- ==========================================
-    BOOK DETAIL MODAL
-    ========================================== -->
-    <div id="bookModal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <span class="book-cover-big" id="modalCover">📖</span>
-            <h2 id="modalTitle">Book Title</h2>
-            <div class="modal-author" id="modalAuthor">Author Name</div>
-            <div class="modal-meta">
-                <span id="modalFileType">PDF</span>
-                <span>•</span>
-                <span id="modalFileSize">0 MB</span>
-                <span>•</span>
-                <span id="modalRating">⭐ 0.0</span>
-            </div>
-            <div class="modal-desc" id="modalDesc">Book description goes here...</div>
-            <div class="modal-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="modalProgressFill" style="width:0%"></div>
-                </div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-top:4px;">
-                    <span id="modalProgressLabel">0%</span>
-                    <span id="modalStatusIcon">🌱</span>
-                </div>
-            </div>
-            <button class="btn-gold" id="modalReadBtn">📖 Read Now</button>
-            <button class="btn-ghost" id="modalCloseBtn">Close</button>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">
+          <span>✦</span>
         </div>
-    </div>
 
-    <!-- ==========================================
-    TOAST
-    ========================================== -->
-    <div id="toast" class="toast"></div>
+        <div class="brand-text">
+          <h1>MM Digital Library</h1>
+          <p>Your reading garden</p>
+        </div>
+      </div>
 
+      <button
+        class="profile-button"
+        type="button"
+        data-open-profile
+        aria-label="Open profile"
+      >
+        ◌
+      </button>
+    </header>
 
-    <!-- ==========================================
-    JAVASCRIPT (All in One)
-    ========================================== -->
-    <script>
-        // ============================================================
-        // 1. TELEGRAM WEB APP INIT
-        // ============================================================
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    <section class="greeting">
+      <p class="greeting-small">WELCOME BACK, READER</p>
+      <h2>
+        ဒီနေ့ ဘယ်ဇာတ်လမ်းကို<br>
+        <span>ဖတ်ကြမလဲ?</span>
+      </h2>
+    </section>
 
-        // ============================================================
-        // 2. USER DATA
-        // ============================================================
-        function getTelegramUser() {
-            return tg.initDataUnsafe?.user || null;
-        }
+    <section class="search-section">
+      <label class="search-box" for="searchInput">
+        <span class="search-symbol">⌕</span>
 
-        function getGreeting() {
-            const hour = new Date().getHours();
-            if (hour < 12) return 'Good morning! 🌅';
-            if (hour < 17) return 'Good afternoon! ☀️';
-            return 'Good evening! 🌙';
-        }
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="စာအုပ်ရှာရန်..."
+          autocomplete="off"
+        >
 
-        // ============================================================
-        // 3. API CONFIG
-        // ============================================================
-        // 🔥 ခင်ဗျားရဲ့ Bot Backend URL ကို ဒီမှာထည့်ပါ
-        const API_BASE = 'pdn.piko.itechut.com';  // <-- ပြင်ဆင်ပါ
-        // const API_BASE = 'https://mochigum48-cyber.github.io/my-telegram-app'; // Local JSON စမ်းချင်ရင်
+        <button
+          id="clearButton"
+          class="clear-button"
+          type="button"
+          aria-label="Clear search"
+        >
+          ×
+        </button>
+      </label>
+    </section>
 
-        // ============================================================
-        // 4. BOOK DATA (Local Cache + API)
-        // ============================================================
-        let books = [];
-        let currentBook = null;
+    <section class="section" id="homeSection">
+      <div class="section-title-row">
+        <h2>ဆက်ဖတ်ရန်</h2>
 
-        // Growth System
-        function getGrowthStage(progress) {
-            if (progress >= 100) return { status: '✦', label: 'Constellation', cssClass: 'constellation',
-                color: 'var(--constellation)', glow: 'glow-constellation' };
-            if (progress >= 71) return { status: '🌸', label: 'Bloom', cssClass: 'bloom', color: 'var(--bloom)',
-                glow: 'glow-bloom' };
-            if (progress >= 31) return { status: '🌿', label: 'Sprout', cssClass: 'sprout', color: 'var(--blue)',
-                glow: 'glow-sprout' };
-            if (progress > 0) return { status: '🌱', label: 'Seed', cssClass: 'seed', color: 'var(--text-muted)',
-                glow: 'glow-seed' };
-            return { status: '🌰', label: 'Dormant', cssClass: 'dormant', color: 'var(--text-muted)', glow: '' };
-        }
+        <button
+          class="text-button"
+          type="button"
+          data-show-library
+        >
+          အားလုံးကြည့်ရန်
+        </button>
+      </div>
 
-        // ============================================================
-        // 5. FETCH BOOKS FROM BOT API
-        // ============================================================
-        async function fetchBooks() {
-            const grid = document.getElementById('bookGrid');
+      <article class="continue-card">
+        <div class="continue-cover">
+          <div class="cover-orbit"></div>
+          <div class="cover-flower">✿</div>
+          <div class="cover-star">✦</div>
+        </div>
 
-            try {
-                const response = await fetch(`${API_BASE}/api/books`);
-                if (!response.ok) throw new Error('Failed to fetch books');
+        <div class="continue-info">
+          <span class="status-label">BLOOMING · 65%</span>
+          <h3>မိုးရာသီရဲ့အိပ်မက်</h3>
+          <p class="author">မောင်မောင်</p>
 
-                const data = await response.json();
+          <div class="progress-row">
+            <div class="progress-bar">
+              <span style="width: 65%"></span>
+            </div>
+            <span class="progress-number">65%</span>
+          </div>
 
-                if (data.books && data.books.length > 0) {
-                    books = data.books;
-                } else {
-                    // Fallback: စာအုပ်မရှိရင် Sample Data ပြမယ်
-                    books = getSampleBooks();
-                }
+          <button
+            class="continue-button"
+            type="button"
+            data-read-current
+          >
+            ဆက်ဖတ်ရန်
+            <span>→</span>
+          </button>
+        </div>
+      </article>
 
-                renderBooks(books);
+      <div class="section-title-row" style="margin-top: 24px;">
+        <h2>အမျိုးအစားများ</h2>
 
-            } catch (error) {
-                console.warn('API fetch failed, using sample data:', error);
-                books = getSampleBooks();
-                renderBooks(books);
-                showToast('📡 Using sample data (API not connected)');
-            }
-        }
+        <button
+          class="text-button"
+          type="button"
+          data-show-explore
+        >
+          ပိုကြည့်ရန်
+        </button>
+      </div>
 
-        // ============================================================
-        // 6. SAMPLE BOOKS (Fallback)
-        // ============================================================
-        function getSampleBooks() {
-            return [
-                { id: '1', title: 'Dune', author: 'Frank Herbert', cover: '🌵', category: 'scifi', fileType: 'PDF',
-                    fileSize: '4.2 MB', rating: 4.9, views: 3240, progress: 65,
-                    description: 'Set on the desert planet Arrakis, Dune follows the journey of Paul Atreides as he navigates politics, prophecy, and power.' },
-                { id: '2', title: 'The Hobbit', author: 'J.R.R. Tolkien', cover: '🏔️', category: 'fantasy',
-                    fileType: 'EPUB', fileSize: '2.1 MB', rating: 4.8, views: 2800, progress: 100,
-                    description: 'A hobbit named Bilbo Baggins embarks on an epic quest to reclaim the Lonely Mountain.' },
-                { id: '3', title: 'The Midnight Library', author: 'Matt Haig', cover: '🌙', category: 'fantasy',
-                    fileType: 'PDF', fileSize: '3.4 MB', rating: 4.7, views: 1950, progress: 30,
-                    description: 'Between life and death, there is a library full of books that contain alternate versions of your life.' },
-                { id: '4', title: 'The Invisible Life of Addie LaRue', author: 'V.E. Schwab', cover: '🕯️',
-                    category: 'fantasy', fileType: 'PDF', fileSize: '5.6 MB', rating: 4.6, views: 1200,
-                    progress: 80,
-                    description: 'A young woman makes a Faustian bargain to live forever, but is cursed to be forgotten by everyone she meets.' },
-                { id: '5', title: 'Project Hail Mary', author: 'Andy Weir', cover: '🚀', category: 'scifi',
-                    fileType: 'PDF', fileSize: '6.8 MB', rating: 4.9, views: 2100, progress: 45,
-                    description: 'A lone astronaut on a desperate mission to save Earth must solve the mystery of his lost memory.' },
-                { id: '6', title: 'Pride and Prejudice', author: 'Jane Austen', cover: '📜', category: 'classic',
-                    fileType: 'EPUB', fileSize: '1.2 MB', rating: 4.7, views: 980, progress: 10,
-                    description: 'The story of Elizabeth Bennet and Mr. Darcy navigating love, class, and society in 19th century England.' }
-            ];
-        }
+      <div class="category-list">
+        <button class="category active" type="button" data-category="all">အားလုံး</button>
+        <button class="category" type="button" data-category="ဝတ္ထု">ဝတ္ထု</button>
+        <button class="category" type="button" data-category="ပညာရေး">ပညာရေး</button>
+        <button class="category" type="button" data-category="သမိုင်း">သမိုင်း</button>
+        <button class="category" type="button" data-category="စိတ်ကူးယဉ်">စိတ်ကူးယဉ်</button>
+      </div>
 
-        // ============================================================
-        // 7. RENDER BOOKS
-        // ============================================================
-        function renderBooks(bookList) {
-            const grid = document.getElementById('bookGrid');
-            if (!grid) return;
+      <div class="section-title-row">
+        <h2>စာအုပ်အသစ်များ</h2>
 
-            if (!bookList || bookList.length === 0) {
-                grid.innerHTML = `
-                    <div class="page-placeholder">
-                        <span class="placeholder-icon">✧</span>
-                        <h2>No Books Yet</h2>
-                        <p>Admin will upload books soon. Check back later!</p>
-                    </div>
-                `;
-                return;
-            }
+        <button
+          class="text-button"
+          type="button"
+          data-open-shop
+        >
+          Shop ကြည့်ရန်
+        </button>
+      </div>
 
-            grid.innerHTML = bookList.map(book => {
-                const stage = getGrowthStage(book.progress || 0);
-                const progressColor = stage.cssClass;
-                const progress = book.progress || 0;
+      <div class="book-scroller" id="bookScroller"></div>
 
-                return `
-                    <div class="book-card" data-id="${book.id}" onclick="openBook('${book.id}')">
-                        <div class="book-cover ${stage.glow}">${book.cover || '📖'}</div>
-                        <div class="book-info">
-                            <div class="book-title">${book.title}</div>
-                            <div class="book-author">${book.author}</div>
-                            <div class="book-meta">
-                                <span>${book.fileType || 'PDF'}</span>
-                                <span>•</span>
-                                <span>${book.fileSize || '0 MB'}</span>
-                                <span>•</span>
-                                <span>⭐ ${book.rating || '0.0'}</span>
-                            </div>
-                            <div class="book-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill ${progressColor}" style="width:${progress}%"></div>
-                                </div>
-                                <span class="progress-label ${progressColor}">${progress}%</span>
-                                <span class="book-status">${stage.status}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+      <p class="not-found" id="notFound" hidden>
+        ရှာဖွေထားသော စာအုပ်မတွေ့ပါ။
+      </p>
+    </section>
 
-        // ============================================================
-        // 8. OPEN BOOK (Modal)
-        // ============================================================
-        function openBook(bookId) {
-            const book = books.find(b => b.id === bookId);
-            if (!book) return;
+    <section class="section" id="shopSection" hidden>
+      <div class="section-title-row">
+        <h2>Shop</h2>
 
-            currentBook = book;
-            const stage = getGrowthStage(book.progress || 0);
+        <button
+          class="text-button"
+          type="button"
+          data-go-home
+        >
+          Home
+        </button>
+      </div>
 
-            document.getElementById('modalCover').textContent = book.cover || '📖';
-            document.getElementById('modalTitle').textContent = book.title;
-            document.getElementById('modalAuthor').textContent = book.author;
-            document.getElementById('modalFileType').textContent = book.fileType || 'PDF';
-            document.getElementById('modalFileSize').textContent = book.fileSize || '0 MB';
-            document.getElementById('modalRating').textContent = `⭐ ${book.rating || '0.0'}`;
-            document.getElementById('modalDesc').textContent = book.description || 'No description available.';
-            document.getElementById('modalProgressFill').style.width = `${book.progress || 0}%`;
-            document.getElementById('modalProgressFill').className = `progress-fill ${stage.cssClass}`;
-            document.getElementById('modalProgressLabel').textContent = `${book.progress || 0}%`;
-            document.getElementById('modalStatusIcon').textContent = stage.status;
+      <div class="shop-scroller" id="shopScroller"></div>
+    </section>
 
-            document.getElementById('bookModal').classList.remove('hidden');
+    <section class="profile-panel" id="profilePanel" hidden>
+      <div class="profile-panel-head">
+        <h2>Profile</h2>
 
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        }
+        <button
+          class="close-button"
+          type="button"
+          data-close-profile
+          aria-label="Close profile"
+        >
+          ×
+        </button>
+      </div>
 
-        // ============================================================
-        // 9. READ BOOK (Request from Bot)
-        // ============================================================
-        function readBook() {
-            if (!currentBook) return;
+      <div class="profile-user">
+        <div class="profile-avatar">◌</div>
 
-            const user = getTelegramUser();
-            const userId = user?.id || 'guest';
+        <div>
+          <h3 id="profileName">Reader</h3>
+          <p id="profileUsername">@reader</p>
+        </div>
+      </div>
 
-            // Method 1: Bot ကို Direct Message ပို့ပြီး PDF တောင်းမယ်
-            const botUsername = 'enn_filesststoragebot'; // <-- ခင်ဗျားရဲ့ Bot Username ထည့်ပါ
-            const bookId = currentBook.id;
+      <div class="profile-stat-row">
+        <div class="profile-stat">
+          <strong>12</strong>
+          <span>ဖတ်ပြီး</span>
+        </div>
 
-            // Telegram ကို Deep Link နဲ့ခေါ်မယ်
-            const deepLink = `https://t.me/${botUsername}?start=read_${bookId}`;
+        <div class="profile-stat">
+          <strong id="savedCount">0</strong>
+          <span>သိမ်းထား</span>
+        </div>
 
-            // Modal ကိုပိတ်ပြီး Bot ဆီခေါ်သွားမယ်
-            closeModal();
+        <div class="profile-stat">
+          <strong>65%</strong>
+          <span>ခရီးစဉ်</span>
+        </div>
+      </div>
 
-            // Telegram ထဲမှာ Bot Chat ကိုဖွင့်မယ်
-            window.open(deepLink, '_blank');
+      <button class="profile-menu-item" type="button" data-show-library>
+        <span>✧</span>
+        <span>My Library</span>
+        <b>›</b>
+      </button>
 
-            // ဒါမှမဟုတ် Bot API ကို တိုက်ရိုက်ခေါ်ချင်ရင် (Backend ရှိမှ)
-            /*
-            fetch(`${API_BASE}/api/request/${currentBook.id}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showToast('📥 PDF is being sent to your Telegram!');
-                } else {
-                    showToast('❌ Failed to request book. Try again.');
-                }
-            })
-            .catch(err => {
-                showToast('❌ Error connecting to server.');
-                console.error(err);
-            });
-            */
+      <button class="profile-menu-item" type="button" data-toggle-theme>
+        <span>☾</span>
+        <span>Night Garden</span>
+        <b id="themeStatus">ON</b>
+      </button>
 
-            showToast('📥 Opening Telegram to send you the book...');
-        }
+      <button class="profile-menu-item" type="button">
+        <span>?</span>
+        <span>Help &amp; Support</span>
+        <b>›</b>
+      </button>
+    </section>
+  </main>
 
-        // ============================================================
-        // 10. CLOSE MODAL
-        // ============================================================
-        function closeModal() {
-            document.getElementById('bookModal').classList.add('hidden');
-            currentBook = null;
-        }
+  <nav class="bottom-nav">
+    <button class="nav-item active" type="button" data-go-home>
+      <span>⌂</span>
+      <small>ပင်မ</small>
+    </button>
 
-        // ============================================================
-        // 11. SEARCH & FILTER
-        // ============================================================
-        function searchBooks(query) {
-            const q = query.toLowerCase().trim();
-            if (!q) {
-                renderBooks(books);
-                return;
-            }
-            const filtered = books.filter(b =>
-                b.title.toLowerCase().includes(q) ||
-                b.author.toLowerCase().includes(q) ||
-                (b.category && b.category.toLowerCase().includes(q))
-            );
-            renderBooks(filtered);
-        }
+    <button class="nav-item" type="button" data-show-explore>
+      <span>⌕</span>
+      <small>ရှာရန်</small>
+    </button>
 
-        function filterByCategory(category) {
-            if (category === 'all') {
-                renderBooks(books);
-                return;
-            }
-            const filtered = books.filter(b => (b.category || '').toLowerCase() === category);
-            renderBooks(filtered);
-        }
+    <button class="nav-item" type="button" data-show-library>
+      <span>✧</span>
+      <small>Library</small>
+    </button>
 
-        // ============================================================
-        // 12. TOAST
-        // ============================================================
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2500);
-        }
+    <button class="nav-item" type="button" data-open-profile>
+      <span>◌</span>
+      <small>Profile</small>
+    </button>
+  </nav>
 
-        // ============================================================
-        // 13. NAVIGATION
-        // ============================================================
-        function setupNavigation() {
-            const navItems = document.querySelectorAll('.nav-item');
-            const pages = {
-                home: document.getElementById('page-home'),
-                explore: document.getElementById('page-explore'),
-                library: document.getElementById('page-library'),
-                profile: document.getElementById('page-profile')
-            };
+  <div class="toast" id="toast"></div>
 
-            navItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const pageId = this.dataset.page;
-
-                    navItems.forEach(n => n.classList.remove('active'));
-                    this.classList.add('active');
-
-                    Object.keys(pages).forEach(key => {
-                        if (pages[key]) pages[key].classList.remove('active');
-                    });
-
-                    const target = pages[pageId];
-                    if (target) target.classList.add('active');
-
-                    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                });
-            });
-        }
-
-        // ============================================================
-        // 14. CATEGORY CHIPS
-        // ============================================================
-        function setupCategories() {
-            const chips = document.querySelectorAll('.category-chip');
-            chips.forEach(chip => {
-                chip.addEventListener('click', function() {
-                    chips.forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    const cat = this.dataset.cat;
-                    filterByCategory(cat);
-                    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                });
-            });
-        }
-
-        // ============================================================
-        // 15. SEARCH INPUT
-        // ============================================================
-        function setupSearch() {
-            const input = document.getElementById('searchInput');
-            if (input) {
-                input.addEventListener('input', function() {
-                    searchBooks(this.value);
-                });
-            }
-        }
-
-        // ============================================================
-        // 16. MODAL EVENTS
-        // ============================================================
-        function setupModal() {
-            document.getElementById('modalReadBtn').addEventListener('click', readBook);
-            document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
-
-            // Click outside to close
-            document.getElementById('bookModal').addEventListener('click', function(e) {
-                if (e.target === this) closeModal();
-            });
-        }
-
-        // ============================================================
-        // 17. GREETING
-        // ============================================================
-        function setGreeting() {
-            const el = document.getElementById('greetingText');
-            if (el) {
-                const user = getTelegramUser();
-                const name = user?.first_name || 'Reader';
-                el.textContent = `${getGreeting()} ${name}!`;
-            }
-        }
-
-        // ============================================================
-        // 18. INIT
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            setGreeting();
-            setupNavigation();
-            setupCategories();
-            setupSearch();
-            setupModal();
-
-            // Load books from API
-            fetchBooks();
-
-            // Close modal on Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') closeModal();
-            });
-
-            // Haptic for back gesture
-            if (tg.BackButton) {
-                tg.BackButton.onClick(() => {
-                    if (!document.getElementById('bookModal').classList.contains('hidden')) {
-                        closeModal();
-                        return;
-                    }
-                    // Home page ကိုပြန်သွား
-                    document.querySelector('.nav-item[data-page="home"]')?.click();
-                });
-            }
-
-            console.log('✨ Reader\'s Odyssey loaded successfully!');
-        });
-
-        // ============================================================
-        // 19. EXPOSE FUNCTIONS FOR GLOBAL USE
-        // ============================================================
-        window.openBook = openBook;
-        window.readBook = readBook;
-        window.closeModal = closeModal;
-        window.showToast = showToast;
-        window.getTelegramUser = getTelegramUser;
-        window.fetchBooks = fetchBooks;
-        window.renderBooks = renderBooks;
-        window.books = books;
-    </script>
-
+  <script src="js/app.js"></script>
 </body>
 </html>
